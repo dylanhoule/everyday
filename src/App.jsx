@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import TodoItem from './TodoItem.jsx';
 import Calendar from './Calendar.jsx';
 import { today } from './date.js';
 
 const KEY = 'todos';
+const DIAL_C = 2 * Math.PI * 52; // circumference of the progress dial
 
 function load() {
   try {
@@ -62,6 +64,7 @@ export default function App() {
   const doneToday = todos.filter((t) => t.done && t.doneDate === iso);
   const total = active.length + doneToday.length;
   const pct = total ? Math.round((doneToday.length / total) * 100) : 0;
+  const allDone = total > 0 && active.length === 0;
   const now = new Date();
   const date = `${now.toLocaleDateString(undefined, { weekday: 'short' })} · ${now.toLocaleDateString(
     undefined,
@@ -78,7 +81,7 @@ export default function App() {
         </p>
       </header>
 
-      <nav className="viewtabs" aria-label="View">
+      <nav className="viewtabs" aria-label="View" data-view={view}>
         <button
           className={`viewtab ${view === 'today' ? 'on' : ''}`}
           aria-pressed={view === 'today'}
@@ -95,93 +98,193 @@ export default function App() {
         </button>
       </nav>
 
-      {view === 'calendar' ? (
-        <Calendar
-          todos={todos}
-          onAdd={add}
-          onToggle={toggle}
-          onEdit={edit}
-          onDelete={remove}
-        />
-      ) : (
-        <>
-          <section className="hero" aria-label="Today's progress">
-            <span className="ring ring-1" aria-hidden="true" />
-            <span className="ring ring-2" aria-hidden="true" />
-            <span className="ring ring-3" aria-hidden="true" />
-            <p className="eyebrow">Today's progress</p>
-            <p className="hero-num">{active.length}</p>
-            <p className="hero-cap">
-              {total === 0
-                ? 'add a task to begin'
-                : active.length === 0
-                  ? 'all done — nice work'
-                  : `${active.length === 1 ? 'task' : 'tasks'} left today`}
-            </p>
-            <div className="stats">
-              <div className="stat">
-                <span className="stat-n">{doneToday.length}</span>
-                <span className="stat-l">DONE</span>
-              </div>
-              <div className="stat">
-                <span className="stat-n">{total}</span>
-                <span className="stat-l">TOTAL</span>
-              </div>
-              <div className="stat">
-                <span className="stat-n">{pct}%</span>
-                <span className="stat-l">COMPLETE</span>
-              </div>
-            </div>
-          </section>
-
-          <form className="add" onSubmit={submit}>
-            <input
-              ref={inputRef}
-              className="add-input"
-              type="text"
-              placeholder="Add a task…"
-              autoFocus
-              enterKeyHint="done"
-              autoComplete="off"
+      <AnimatePresence mode="wait" initial={false}>
+        {view === 'calendar' ? (
+          <motion.div
+            key="cal"
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 24, transition: { duration: 0.13, ease: 'easeIn' } }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+          >
+            <Calendar
+              todos={todos}
+              onAdd={add}
+              onToggle={toggle}
+              onEdit={edit}
+              onDelete={remove}
             />
-          </form>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="today"
+            initial={{ opacity: 0, x: -24 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -24, transition: { duration: 0.13, ease: 'easeIn' } }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+          >
+            <section className="hero" aria-label="Today's progress">
+              <span className="ring ring-1" aria-hidden="true" />
+              <span className="ring ring-3" aria-hidden="true" />
+              <p className="eyebrow">Today's progress</p>
+              <div className={`dial ${allDone ? 'complete' : ''}`}>
+                <svg className="dial-svg" viewBox="0 0 120 120" aria-hidden="true">
+                  <circle className="dial-track" cx="60" cy="60" r="52" />
+                  <circle
+                    className="dial-fill"
+                    cx="60"
+                    cy="60"
+                    r="52"
+                    strokeDasharray={DIAL_C}
+                    strokeDashoffset={DIAL_C * (1 - pct / 100)}
+                  />
+                </svg>
+                <div className="dial-center">
+                  <span className="hero-num num-window">
+                    <AnimatePresence mode="popLayout" initial={false}>
+                      <motion.span
+                        key={active.length}
+                        initial={{ y: '0.8em', opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: '-0.8em', opacity: 0 }}
+                        transition={{ duration: 0.25, ease: 'easeOut' }}
+                      >
+                        {active.length}
+                      </motion.span>
+                    </AnimatePresence>
+                  </span>
+                </div>
+              </div>
+              <p className="hero-cap">
+                {total === 0
+                  ? 'add a task to begin'
+                  : allDone
+                    ? 'all done — nice work'
+                    : `${active.length === 1 ? 'task' : 'tasks'} left today`}
+              </p>
+              <div className="stats">
+                <div className="stat">
+                  <span className="stat-n">{doneToday.length}</span>
+                  <span className="stat-l">DONE</span>
+                </div>
+                <div className="stat">
+                  <span className="stat-n">{total}</span>
+                  <span className="stat-l">TOTAL</span>
+                </div>
+                <div className="stat">
+                  <span className="stat-n">{pct}%</span>
+                  <span className="stat-l">COMPLETE</span>
+                </div>
+              </div>
+            </section>
 
-          {active.length === 0 && doneToday.length === 0 ? (
-            <p className="empty">Nothing today yet. Add your first task above.</p>
-          ) : (
-            active.length > 0 && (
+            <form className="add" onSubmit={submit}>
+              <input
+                ref={inputRef}
+                className="add-input"
+                type="text"
+                placeholder="Add a task…"
+                autoFocus
+                enterKeyHint="done"
+                autoComplete="off"
+              />
+            </form>
+
+            {active.length > 0 && (
               <>
                 <p className="group-label">To do</p>
                 <ul className="list">
-                  {active.map((t) => (
-                    <TodoItem key={t.id} todo={t} onToggle={toggle} onEdit={edit} onDelete={remove} />
-                  ))}
+                  <AnimatePresence initial={false}>
+                    {active.map((t) => (
+                      <TodoItem
+                        key={t.id}
+                        todo={t}
+                        leaveOnComplete
+                        onToggle={toggle}
+                        onEdit={edit}
+                        onDelete={remove}
+                      />
+                    ))}
+                  </AnimatePresence>
                 </ul>
               </>
-            )
-          )}
+            )}
 
-          {doneToday.length > 0 && (
-            <section className="done-section">
-              <button
-                className="done-header"
-                aria-expanded={showDone}
-                onClick={() => setShowDone((s) => !s)}
-              >
-                <span className={`chevron ${showDone ? 'open' : ''}`} aria-hidden="true">▸</span>
-                Completed ({doneToday.length})
-              </button>
-              {showDone && (
-                <ul className="list">
-                  {doneToday.map((t) => (
-                    <TodoItem key={t.id} todo={t} onToggle={toggle} onEdit={edit} onDelete={remove} />
-                  ))}
-                </ul>
-              )}
-            </section>
-          )}
-        </>
-      )}
+            {total === 0 && (
+              <div className="empty">
+                <svg className="empty-mark" viewBox="0 0 48 48" aria-hidden="true">
+                  <circle
+                    cx="24"
+                    cy="24"
+                    r="21"
+                    fill="none"
+                    stroke="var(--check-border)"
+                    strokeWidth="2.5"
+                    strokeDasharray="4 7"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M16 24l6 6 11-12"
+                    fill="none"
+                    stroke="var(--accent)"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <p className="empty-title">A clean slate</p>
+                <p className="empty-sub">Add your first task above.</p>
+              </div>
+            )}
+
+            {doneToday.length > 0 && (
+              <section className="done-section">
+                <button
+                  className="done-header"
+                  aria-expanded={showDone}
+                  onClick={() => setShowDone((s) => !s)}
+                >
+                  <span className={`chevron ${showDone ? 'open' : ''}`} aria-hidden="true">
+                    ▸
+                  </span>
+                  Completed ({doneToday.length})
+                </button>
+                <AnimatePresence initial={false}>
+                  {showDone && (
+                    <motion.div
+                      key="done"
+                      style={{ overflow: 'hidden' }}
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1, transitionEnd: { overflow: 'visible' } }}
+                      exit={{
+                        height: 0,
+                        opacity: 0,
+                        overflow: 'hidden',
+                        transition: { duration: 0.18, ease: 'easeIn' },
+                      }}
+                      transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      <ul className="list">
+                        <AnimatePresence initial={false}>
+                          {doneToday.map((t) => (
+                            <TodoItem
+                              key={t.id}
+                              todo={t}
+                              onToggle={toggle}
+                              onEdit={edit}
+                              onDelete={remove}
+                            />
+                          ))}
+                        </AnimatePresence>
+                      </ul>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </section>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

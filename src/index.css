@@ -95,12 +95,6 @@ body {
   top: -30px;
   right: -40px;
 }
-.ring-2 {
-  width: 120px;
-  height: 120px;
-  top: 6px;
-  right: 4px;
-}
 .ring-3 {
   width: 150px;
   height: 150px;
@@ -108,19 +102,71 @@ body {
   left: -46px;
 }
 .hero .eyebrow,
-.hero-num,
 .hero-cap,
-.stats {
+.stats,
+.dial {
   position: relative;
 }
+/* Slow ambient drift on the decorative rings (killed by reduced-motion). */
+@keyframes drift {
+  50% {
+    transform: translate(6px, -9px);
+  }
+}
+.ring-1 {
+  animation: drift 16s ease-in-out infinite;
+}
+.ring-3 {
+  animation: drift 21s ease-in-out infinite reverse;
+}
+
+/* Progress dial: real SVG ring that fills as tasks complete. */
+.dial {
+  width: 158px;
+  margin: 12px auto 0;
+}
+.dial-svg {
+  display: block;
+  width: 100%;
+  transform: rotate(-90deg); /* fill starts at 12 o'clock */
+}
+.dial-track {
+  fill: none;
+  stroke: var(--accent-soft);
+  stroke-width: 7;
+}
+.dial-fill {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 7;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s var(--ease-out);
+}
+.dial-center {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+.dial.complete {
+  border-radius: 50%;
+  animation: check-pulse 0.6s ease-out;
+}
 .hero-num {
-  margin: 6px 0 0;
   font-family: var(--serif);
   font-weight: 700;
-  font-size: clamp(64px, 22vw, 84px);
-  line-height: 0.95;
+  font-size: 52px;
+  line-height: 1.1;
   letter-spacing: -0.02em;
   color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.num-window {
+  display: block;
+  overflow: hidden;
+}
+.num-window > span {
+  display: inline-block;
 }
 .hero-cap {
   margin: 8px 0 0;
@@ -146,6 +192,7 @@ body {
   font-size: 26px;
   line-height: 1;
   color: var(--ink);
+  font-variant-numeric: tabular-nums;
 }
 .stat-l {
   font-size: 11px;
@@ -269,7 +316,10 @@ body {
 }
 @media (hover: hover) {
   .row:hover .row-face {
-    background: var(--bg);
+    background: color-mix(in srgb, var(--accent-soft) 30%, var(--card));
+  }
+  .x:hover {
+    color: var(--danger);
   }
 }
 
@@ -304,18 +354,60 @@ body {
   background: var(--accent);
   border-color: var(--accent);
 }
+.tick {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+.tickpath {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.25s var(--ease-out) 0.05s;
+}
+.row.done .tickpath {
+  stroke-dashoffset: 0; /* checkmark draws in; un-checking un-draws it */
+}
+.row.checking .check {
+  animation: check-pulse 0.45s ease-out;
+}
+@keyframes check-pulse {
+  from {
+    box-shadow: 0 0 0 0 rgba(87, 79, 202, 0.35);
+  }
+  to {
+    box-shadow: 0 0 0 14px rgba(87, 79, 202, 0);
+  }
+}
 
 .text {
+  position: relative;
   flex: 1;
   font-size: 16px;
   color: var(--ink);
   padding: 4px 0;
   cursor: text;
   word-break: break-word;
+  transition: color 0.2s;
+}
+/* Strikethrough that draws left-to-right on completion.
+   ponytail: single mid-line (not per-line like text-decoration); fine for short tasks. */
+.text::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1.5px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s var(--ease-out) 0.1s;
 }
 .row.done .text {
   color: var(--muted);
-  text-decoration: line-through;
+}
+.row.done .text::after {
+  transform: scaleX(1);
 }
 
 .edit-input {
@@ -361,9 +453,29 @@ body {
 
 .empty {
   text-align: center;
+  padding: 34px 0 26px;
+  animation: fade-up 0.35s var(--ease-out);
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.empty-mark {
+  width: 48px;
+}
+.empty-title {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--ink);
+  margin: 12px 0 2px;
+}
+.empty-sub {
+  margin: 0;
   color: var(--muted);
-  margin: 32px 0;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .done-section {
@@ -372,6 +484,7 @@ body {
 
 /* View tabs (Today / Calendar) */
 .viewtabs {
+  position: relative;
   display: flex;
   gap: 4px;
   padding: 4px;
@@ -380,7 +493,23 @@ body {
   border: 1px solid var(--line);
   border-radius: 14px;
 }
+/* Sliding active pill (springs between tabs). */
+.viewtabs::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(50% - 6px);
+  border-radius: 10px;
+  background: var(--accent-soft);
+  transition: transform 0.3s var(--ease-spring);
+}
+.viewtabs[data-view='calendar']::before {
+  transform: translateX(calc(100% + 4px));
+}
 .viewtab {
+  position: relative; /* above the sliding pill */
   flex: 1;
   padding: 9px 0;
   border: none;
@@ -399,8 +528,7 @@ body {
   transform: scale(0.96);
 }
 .viewtab.on {
-  background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--accent); /* background comes from the sliding pill */
 }
 
 /* Calendar */

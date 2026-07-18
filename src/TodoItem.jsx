@@ -1,14 +1,30 @@
 import { useRef, useState } from 'react';
+import { motion, useReducedMotion } from 'motion/react';
 import { classifyGesture, shouldDelete } from './swipe.js';
 
-export default function TodoItem({ todo, onToggle, onEdit, onDelete }) {
+const CHECK_MS = 450; // check-off choreography length before the row leaves the list
+
+export default function TodoItem({ todo, leaveOnComplete = false, onToggle, onEdit, onDelete }) {
   const [editing, setEditing] = useState(false);
+  const [checking, setChecking] = useState(false); // choreography in flight, toggle deferred
   const [dx, setDx] = useState(0); // current swipe offset (<= 0)
+  const [dragging, setDragging] = useState(false);
   const drag = useRef(null); // { startX, startY, kind }
+  const reduced = useReducedMotion();
+
+  const check = () => {
+    if (checking) return; // ignore re-taps mid-choreography
+    if (todo.done || !leaveOnComplete || reduced) return onToggle(todo.id);
+    setChecking(true);
+    // Deliberately not cleared on unmount: the toggle must still commit if the
+    // view switches mid-choreography. A stale id is a no-op in App's toggle.
+    setTimeout(() => onToggle(todo.id), CHECK_MS);
+  };
 
   const onPointerDown = (e) => {
     if (editing || e.pointerType === 'mouse') return; // swipe = touch/pen only
     drag.current = { startX: e.clientX, startY: e.clientY, kind: 'tap' };
+    setDragging(true);
   };
 
   const onPointerMove = (e) => {
@@ -28,8 +44,9 @@ export default function TodoItem({ todo, onToggle, onEdit, onDelete }) {
   const endDrag = () => {
     const d = drag.current;
     drag.current = null;
+    setDragging(false);
     if (d && d.kind === 'swipe' && shouldDelete(dx)) onDelete(todo.id);
-    else setDx(0); // snap back
+    else setDx(0); // spring back (CSS transition on .row-face)
   };
 
   const saveEdit = (e) => {
@@ -37,9 +54,15 @@ export default function TodoItem({ todo, onToggle, onEdit, onDelete }) {
     setEditing(false);
   };
 
+  const done = todo.done || checking;
+
   return (
-    <li
-      className={`row ${todo.done ? 'done' : ''}`}
+    <motion.li
+      initial={{ opacity: 0, y: -8, height: 0 }}
+      animate={{ opacity: 1, y: 0, height: 'auto' }}
+      exit={{ opacity: 0, height: 0, transition: { duration: 0.16, ease: 'easeIn' } }}
+      transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+      className={`row ${done ? 'done' : ''} ${checking ? 'checking' : ''}`}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={endDrag}
@@ -48,13 +71,27 @@ export default function TodoItem({ todo, onToggle, onEdit, onDelete }) {
       <div className="delete-pane" style={{ opacity: dx < -20 ? 1 : 0 }}>
         Delete
       </div>
-      <div className="row-face" style={{ transform: `translateX(${dx}px)` }}>
+      <div
+        className={`row-face ${dragging ? 'dragging' : ''}`}
+        style={{ transform: `translateX(${dx}px)` }}
+      >
         <button
           className="check"
           aria-label={todo.done ? 'Mark not done' : 'Mark done'}
-          onClick={() => onToggle(todo.id)}
+          onClick={check}
         >
-          {todo.done ? '✓' : ''}
+          <svg className="tick" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              className="tickpath"
+              d="M5 13l4 4L19 7"
+              pathLength="1"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </button>
 
         {editing ? (
@@ -93,6 +130,6 @@ export default function TodoItem({ todo, onToggle, onEdit, onDelete }) {
           ✕
         </button>
       </div>
-    </li>
+    </motion.li>
   );
 }
