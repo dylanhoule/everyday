@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import TodoItem from './TodoItem.jsx';
 import { iso, today, monthInfo, dayParts } from './date.js';
 
@@ -8,11 +9,18 @@ const MONTHS = [
 ];
 const WEEKDAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
+const gridVariants = {
+  enter: (d) => ({ x: d * 40, opacity: 0 }),
+  center: { x: 0, opacity: 1 },
+  exit: (d) => ({ x: d * -40, opacity: 0 }),
+};
+
 export default function Calendar({ todos, onAdd, onToggle, onEdit, onDelete }) {
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth()); // 0-11
   const [selected, setSelected] = useState(today());
+  const [dir, setDir] = useState(0); // -1 prev, 1 next — drives the slide direction
   const inputRef = useRef(null);
 
   // date -> { open, done } counts, for the day dots.
@@ -34,6 +42,7 @@ export default function Calendar({ todos, onAdd, onToggle, onEdit, onDelete }) {
 
   const step = (delta) => {
     const d = new Date(year, month + delta, 1);
+    setDir(delta);
     setYear(d.getFullYear());
     setMonth(d.getMonth());
   };
@@ -54,6 +63,7 @@ export default function Calendar({ todos, onAdd, onToggle, onEdit, onDelete }) {
     undefined,
     { month: 'short', day: 'numeric' }
   )}`;
+  const monthKey = `${year}-${month}`;
 
   return (
     <>
@@ -63,7 +73,17 @@ export default function Calendar({ todos, onAdd, onToggle, onEdit, onDelete }) {
             ‹
           </button>
           <h2 className="cal-title">
-            {MONTHS[month]} {year}
+            <AnimatePresence mode="popLayout" initial={false}>
+              <motion.span
+                key={monthKey}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+              >
+                {MONTHS[month]} {year}
+              </motion.span>
+            </AnimatePresence>
           </h2>
           <button className="cal-nav" aria-label="Next month" onClick={() => step(1)}>
             ›
@@ -76,34 +96,45 @@ export default function Calendar({ todos, onAdd, onToggle, onEdit, onDelete }) {
           ))}
         </div>
 
-        <div className="cal-grid">
-          {cells.map((day, i) => {
-            if (day === null) return <span key={`b${i}`} className="cal-cell empty" />;
-            const cellIso = iso(new Date(year, month, day));
-            const c = counts.get(cellIso);
-            const cls = [
-              'cal-cell',
-              cellIso === today() ? 'today' : '',
-              cellIso === selected ? 'sel' : '',
-            ].join(' ');
-            return (
-              <button
-                key={cellIso}
-                className={cls}
-                aria-label={dayParts(cellIso).toLocaleDateString(undefined, {
-                  weekday: 'long',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-                aria-pressed={cellIso === selected}
-                onClick={() => setSelected(cellIso)}
-              >
-                <span className="cal-num">{day}</span>
-                {c && <span className={`cal-dot ${c.open ? '' : 'alldone'}`} aria-hidden="true" />}
-              </button>
-            );
-          })}
-        </div>
+        <AnimatePresence mode="popLayout" initial={false} custom={dir}>
+          <motion.div
+            key={monthKey}
+            className="cal-grid"
+            custom={dir}
+            variants={gridVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+          >
+            {cells.map((day, i) => {
+              if (day === null) return <span key={`b${i}`} className="cal-cell empty-cell" />;
+              const cellIso = iso(new Date(year, month, day));
+              const c = counts.get(cellIso);
+              const cls = [
+                'cal-cell',
+                cellIso === today() ? 'today' : '',
+                cellIso === selected ? 'sel' : '',
+              ].join(' ');
+              return (
+                <button
+                  key={cellIso}
+                  className={cls}
+                  aria-label={dayParts(cellIso).toLocaleDateString(undefined, {
+                    weekday: 'long',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                  aria-pressed={cellIso === selected}
+                  onClick={() => setSelected(cellIso)}
+                >
+                  <span className="cal-num">{day}</span>
+                  {c && <span className={`cal-dot ${c.open ? '' : 'alldone'}`} aria-hidden="true" />}
+                </button>
+              );
+            })}
+          </motion.div>
+        </AnimatePresence>
       </section>
 
       <p className="group-label">{selLabel}</p>
@@ -120,12 +151,37 @@ export default function Calendar({ todos, onAdd, onToggle, onEdit, onDelete }) {
       </form>
 
       {dayTasks.length === 0 ? (
-        <p className="empty">No tasks on this day yet.</p>
+        <div className="empty">
+          <svg className="empty-mark" viewBox="0 0 48 48" aria-hidden="true">
+            <circle
+              cx="24"
+              cy="24"
+              r="21"
+              fill="none"
+              stroke="var(--check-border)"
+              strokeWidth="2.5"
+              strokeDasharray="4 7"
+              strokeLinecap="round"
+            />
+            <path
+              d="M16 24l6 6 11-12"
+              fill="none"
+              stroke="var(--accent)"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <p className="empty-title">Nothing planned</p>
+          <p className="empty-sub">Add a task for this day above.</p>
+        </div>
       ) : (
         <ul className="list">
-          {dayTasks.map((t) => (
-            <TodoItem key={t.id} todo={t} onToggle={onToggle} onEdit={onEdit} onDelete={onDelete} />
-          ))}
+          <AnimatePresence initial={false}>
+            {dayTasks.map((t) => (
+              <TodoItem key={t.id} todo={t} onToggle={onToggle} onEdit={onEdit} onDelete={onDelete} />
+            ))}
+          </AnimatePresence>
         </ul>
       )}
     </>

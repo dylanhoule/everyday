@@ -533,6 +533,8 @@ body {
 
 /* Calendar */
 .cal {
+  position: relative; /* anchors the exiting month grid during the slide */
+  overflow: hidden;
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 22px;
@@ -610,7 +612,7 @@ body {
 .cal-cell:active {
   transform: scale(0.94);
 }
-.cal-cell.empty {
+.cal-cell.empty-cell {
   pointer-events: none;
 }
 .cal-num {
@@ -632,12 +634,22 @@ body {
 .cal-cell.sel {
   background: var(--accent-soft);
   border-color: var(--accent);
+  transform: scale(1.04);
+}
+.cal-cell.sel:active {
+  transform: scale(0.97);
 }
 .cal-dot {
   width: 5px;
   height: 5px;
   border-radius: 50%;
   background: var(--accent);
+  animation: dot-pop 0.25s var(--ease-spring) backwards;
+}
+@keyframes dot-pop {
+  from {
+    transform: scale(0);
+  }
 }
 .cal-dot.alldone {
   background: transparent;
