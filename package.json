@@ -8,9 +8,10 @@
     "build": "vite build",
     "preview": "vite preview",
     "icons": "node scripts/gen-icons.mjs",
-    "test": "node src/swipe.test.js && node src/date.test.js && node src/plan.test.js"
+    "test": "node src/swipe.test.js && node src/date.test.js && node src/plan.test.js && node src/merge.test.js"
   },
   "dependencies": {
+    "@upstash/redis": "^1.38.0",
     "motion": "^12.42.2",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"

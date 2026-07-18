@@ -4,6 +4,8 @@ import TodoItem from './TodoItem.jsx';
 import Calendar from './Calendar.jsx';
 import { today } from './date.js';
 import { PLAN } from './plan.js';
+import { merge, purge } from './merge.js';
+import { pull, push } from './sync.js';
 
 const KEY = 'todos';
 const SEED_KEY = 'planSeeded-v1'; // one-shot guard so the plan isn't re-injected each load
@@ -26,7 +28,9 @@ function load() {
       const have = new Set(todos.map((x) => x.id));
       todos = [...PLAN.filter((p) => p.date >= t && !have.has(p.id)), ...todos];
     }
-    return todos;
+    // Backfill updatedAt (legacy/seed items lack it → 0, so any real edit wins the
+    // merge) and drop stale tombstones.
+    return purge(todos.map((t) => (t.updatedAt ? t : { ...t, updatedAt: 0 })));
   } catch {
     return [];
   }
@@ -38,23 +42,51 @@ export default function App() {
   const [view, setView] = useState('today'); // 'today' | 'calendar'
   const inputRef = useRef(null);
 
-  // Persist on every mutation.
+  // Persist on every mutation, and push the blob to the sync store (debounced).
   useEffect(() => {
     localStorage.setItem(KEY, JSON.stringify(todos));
+    push(todos);
   }, [todos]);
 
+  // Pull + merge on open and whenever the app regains focus.
+  useEffect(() => {
+    let cancelled = false;
+    const syncNow = async () => {
+      const remote = await pull();
+      if (!cancelled && remote) setTodos((cur) => purge(merge(cur, remote)));
+    };
+    syncNow();
+    const onVis = () => document.visibilityState === 'visible' && syncNow();
+    document.addEventListener('visibilitychange', onVis);
+    window.addEventListener('focus', syncNow);
+    return () => {
+      cancelled = true;
+      document.removeEventListener('visibilitychange', onVis);
+      window.removeEventListener('focus', syncNow);
+    };
+  }, []);
+
   const add = (text, date = today()) =>
-    setTodos((t) => [{ id: crypto.randomUUID(), text, done: false, date }, ...t]);
+    setTodos((t) => [
+      { id: crypto.randomUUID(), text, done: false, date, updatedAt: Date.now() },
+      ...t,
+    ]);
   const toggle = (id) =>
     setTodos((t) =>
       t.map((x) =>
-        x.id === id ? { ...x, done: !x.done, doneDate: x.done ? undefined : today() } : x
+        x.id === id
+          ? { ...x, done: !x.done, doneDate: x.done ? undefined : today(), updatedAt: Date.now() }
+          : x
       )
     );
-  const remove = (id) => setTodos((t) => t.filter((x) => x.id !== id));
+  // Soft delete: keep a tombstone so the delete propagates to other devices.
+  const remove = (id) =>
+    setTodos((t) => t.map((x) => (x.id === id ? { ...x, deleted: true, updatedAt: Date.now() } : x)));
   const edit = (id, text) =>
     text.trim()
-      ? setTodos((t) => t.map((x) => (x.id === id ? { ...x, text: text.trim() } : x)))
+      ? setTodos((t) =>
+          t.map((x) => (x.id === id ? { ...x, text: text.trim(), updatedAt: Date.now() } : x))
+        )
       : remove(id);
 
   const submit = (e) => {
@@ -68,12 +100,13 @@ export default function App() {
   };
 
   const iso = today();
+  const live = todos.filter((t) => !t.deleted); // hide tombstones from every view
   // Home: today's open tasks + unfinished from earlier days (overdue first).
-  const active = todos
+  const active = live
     .filter((t) => !t.done && t.date <= iso)
     .sort((a, b) => a.date.localeCompare(b.date));
   // Done on today's date — includes overdue tasks completed today (doneDate, not date).
-  const doneToday = todos.filter((t) => t.done && t.doneDate === iso);
+  const doneToday = live.filter((t) => t.done && t.doneDate === iso);
   const total = active.length + doneToday.length;
   const pct = total ? Math.round((doneToday.length / total) * 100) : 0;
   const allDone = total > 0 && active.length === 0;
@@ -119,7 +152,7 @@ export default function App() {
           transition={{ duration: 0.22, ease: 'easeOut' }}
         >
             <Calendar
-              todos={todos}
+              todos={live}
               onAdd={add}
               onToggle={toggle}
               onEdit={edit}
