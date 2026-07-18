@@ -3,18 +3,30 @@ import { AnimatePresence, motion } from 'motion/react';
 import TodoItem from './TodoItem.jsx';
 import Calendar from './Calendar.jsx';
 import { today } from './date.js';
+import { PLAN } from './plan.js';
 
 const KEY = 'todos';
+const SEED_KEY = 'planSeeded-v1'; // one-shot guard so the plan isn't re-injected each load
 const DIAL_C = 2 * Math.PI * 52; // circumference of the progress dial
 
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    if (!raw) return [];
     // Backfill legacy items: undated → today; done without doneDate → its own date.
-    return JSON.parse(raw)
-      .map((t) => (t.date ? t : { ...t, date: today() }))
-      .map((t) => (t.done && !t.doneDate ? { ...t, doneDate: t.date } : t));
+    let todos = raw
+      ? JSON.parse(raw)
+          .map((t) => (t.date ? t : { ...t, date: today() }))
+          .map((t) => (t.done && !t.doneDate ? { ...t, doneDate: t.date } : t))
+      : [];
+    // Seed the training plan once. Only today-or-future items, so seeding mid-plan
+    // doesn't flood the Today view (which rolls all past-incomplete tasks forward).
+    if (!localStorage.getItem(SEED_KEY)) {
+      localStorage.setItem(SEED_KEY, '1');
+      const t = today();
+      const have = new Set(todos.map((x) => x.id));
+      todos = [...PLAN.filter((p) => p.date >= t && !have.has(p.id)), ...todos];
+    }
+    return todos;
   } catch {
     return [];
   }
