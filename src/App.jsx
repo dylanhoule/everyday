@@ -98,15 +98,14 @@ export default function App() {
         </button>
       </nav>
 
-      <AnimatePresence mode="wait" initial={false}>
-        {view === 'calendar' ? (
-          <motion.div
-            key="cal"
-            initial={{ opacity: 0, x: 24 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 24, transition: { duration: 0.13, ease: 'easeIn' } }}
-            transition={{ duration: 0.22, ease: 'easeOut' }}
-          >
+      {/* enter-only view switch: keyed remount slides in, old view unmounts instantly */}
+      {view === 'calendar' ? (
+        <motion.div
+          key="cal"
+          initial={{ opacity: 0, x: 24 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.22, ease: 'easeOut' }}
+        >
             <Calendar
               todos={todos}
               onAdd={add}
@@ -120,7 +119,6 @@ export default function App() {
             key="today"
             initial={{ opacity: 0, x: -24 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -24, transition: { duration: 0.13, ease: 'easeIn' } }}
             transition={{ duration: 0.22, ease: 'easeOut' }}
           >
             <section className="hero" aria-label="Today's progress">
@@ -284,7 +282,6 @@ export default function App() {
             )}
           </motion.div>
         )}
-      </AnimatePresence>
     </div>
   );
 }

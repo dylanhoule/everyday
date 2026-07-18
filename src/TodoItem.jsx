@@ -122,7 +122,7 @@ export default function TodoItem({ todo, leaveOnComplete = false, onToggle, onEd
               }
             }}
           >
-            {todo.text}
+            <span className="text-inner">{todo.text}</span>
           </span>
         )}
 

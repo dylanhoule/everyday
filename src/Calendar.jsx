@@ -9,11 +9,6 @@ const MONTHS = [
 ];
 const WEEKDAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
-const gridVariants = {
-  enter: (d) => ({ x: d * 40, opacity: 0 }),
-  center: { x: 0, opacity: 1 },
-  exit: (d) => ({ x: d * -40, opacity: 0 }),
-};
 
 export default function Calendar({ todos, onAdd, onToggle, onEdit, onDelete }) {
   const now = new Date();
@@ -73,17 +68,16 @@ export default function Calendar({ todos, onAdd, onToggle, onEdit, onDelete }) {
             ‹
           </button>
           <h2 className="cal-title">
-            <AnimatePresence mode="popLayout" initial={false}>
-              <motion.span
-                key={monthKey}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.2, ease: 'easeOut' }}
-              >
-                {MONTHS[month]} {year}
-              </motion.span>
-            </AnimatePresence>
+            {/* enter-only: keyed remount slides in, old month unmounts instantly (can't wedge) */}
+            <motion.span
+              key={monthKey}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              style={{ display: 'inline-block' }}
+            >
+              {MONTHS[month]} {year}
+            </motion.span>
           </h2>
           <button className="cal-nav" aria-label="Next month" onClick={() => step(1)}>
             ›
@@ -96,17 +90,13 @@ export default function Calendar({ todos, onAdd, onToggle, onEdit, onDelete }) {
           ))}
         </div>
 
-        <AnimatePresence mode="popLayout" initial={false} custom={dir}>
-          <motion.div
-            key={monthKey}
-            className="cal-grid"
-            custom={dir}
-            variants={gridVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.25, ease: 'easeOut' }}
-          >
+        <motion.div
+          key={monthKey}
+          className="cal-grid"
+          initial={{ x: dir * 40, opacity: dir ? 0 : 1 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.25, ease: 'easeOut' }}
+        >
             {cells.map((day, i) => {
               if (day === null) return <span key={`b${i}`} className="cal-cell empty-cell" />;
               const cellIso = iso(new Date(year, month, day));
@@ -133,8 +123,7 @@ export default function Calendar({ todos, onAdd, onToggle, onEdit, onDelete }) {
                 </button>
               );
             })}
-          </motion.div>
-        </AnimatePresence>
+        </motion.div>
       </section>
 
       <p className="group-label">{selLabel}</p>

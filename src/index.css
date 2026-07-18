@@ -391,7 +391,10 @@ body {
 }
 /* Strikethrough that draws left-to-right on completion.
    ponytail: single mid-line (not per-line like text-decoration); fine for short tasks. */
-.text::after {
+.text-inner {
+  position: relative;
+}
+.text-inner::after {
   content: '';
   position: absolute;
   left: 0;
@@ -406,7 +409,7 @@ body {
 .row.done .text {
   color: var(--muted);
 }
-.row.done .text::after {
+.row.done .text-inner::after {
   transform: scaleX(1);
 }
 
