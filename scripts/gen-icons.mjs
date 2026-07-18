@@ -1,5 +1,5 @@
 // Generate PWA icons with zero deps (node core zlib). One-off: `npm run icons`.
-// Accent-blue square + white checkmark. ponytail: minimal rasterizer, swap for
+// Accent-purple square + white checkmark. ponytail: minimal rasterizer, swap for
 // @vite-pwa/assets-generator if we ever want fancier icons.
 import { deflateSync } from 'node:zlib';
 import { writeFileSync, mkdirSync } from 'node:fs';
@@ -55,7 +55,7 @@ function drawIcon(size) {
     px[i + 2] = b;
     px[i + 3] = 255;
   };
-  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) set(x, y, 10, 132, 255);
+  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) set(x, y, 87, 79, 202);
 
   const t = Math.max(2, Math.round(size * 0.055)); // stroke half-thickness
   const pts = [

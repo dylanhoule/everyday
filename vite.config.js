@@ -12,8 +12,8 @@ export default defineConfig({
         name: 'everyday',
         short_name: 'everyday',
         description: 'A simple everyday to-do list',
-        theme_color: '#0a84ff',
-        background_color: '#000000',
+        theme_color: '#f4ede3',
+        background_color: '#f4ede3',
         display: 'standalone',
         start_url: '/',
         icons: [

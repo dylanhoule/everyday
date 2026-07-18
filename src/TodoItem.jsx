@@ -16,7 +16,12 @@ export default function TodoItem({ todo, onToggle, onEdit, onDelete }) {
     if (!d) return;
     const mx = e.clientX - d.startX;
     const my = e.clientY - d.startY;
-    if (d.kind === 'tap') d.kind = classifyGesture(mx, my);
+    if (d.kind === 'tap') {
+      d.kind = classifyGesture(mx, my);
+      // Capture once it's a swipe so pointerup outside the row still ends the drag.
+      // Not on pointerdown: capture retargets the eventual click away from buttons.
+      if (d.kind === 'swipe') e.currentTarget.setPointerCapture(e.pointerId);
+    }
     if (d.kind === 'swipe') setDx(Math.min(0, mx)); // left only
   };
 
@@ -67,7 +72,19 @@ export default function TodoItem({ todo, onToggle, onEdit, onDelete }) {
             }}
           />
         ) : (
-          <span className="text" onClick={() => setEditing(true)}>
+          <span
+            className="text"
+            role="button"
+            tabIndex={0}
+            aria-label={`Edit "${todo.text}"`}
+            onClick={() => setEditing(true)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setEditing(true);
+              }
+            }}
+          >
             {todo.text}
           </span>
         )}

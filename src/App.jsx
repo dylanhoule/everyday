@@ -8,8 +8,11 @@ const KEY = 'todos';
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    // Backfill legacy undated items to today so they still show on Home.
-    return raw ? JSON.parse(raw).map((t) => (t.date ? t : { ...t, date: today() })) : [];
+    if (!raw) return [];
+    // Backfill legacy items: undated → today; done without doneDate → its own date.
+    return JSON.parse(raw)
+      .map((t) => (t.date ? t : { ...t, date: today() }))
+      .map((t) => (t.done && !t.doneDate ? { ...t, doneDate: t.date } : t));
   } catch {
     return [];
   }
@@ -29,7 +32,11 @@ export default function App() {
   const add = (text, date = today()) =>
     setTodos((t) => [{ id: crypto.randomUUID(), text, done: false, date }, ...t]);
   const toggle = (id) =>
-    setTodos((t) => t.map((x) => (x.id === id ? { ...x, done: !x.done } : x)));
+    setTodos((t) =>
+      t.map((x) =>
+        x.id === id ? { ...x, done: !x.done, doneDate: x.done ? undefined : today() } : x
+      )
+    );
   const remove = (id) => setTodos((t) => t.filter((x) => x.id !== id));
   const edit = (id, text) =>
     text.trim()
@@ -51,7 +58,8 @@ export default function App() {
   const active = todos
     .filter((t) => !t.done && t.date <= iso)
     .sort((a, b) => a.date.localeCompare(b.date));
-  const doneToday = todos.filter((t) => t.done && t.date === iso);
+  // Done on today's date — includes overdue tasks completed today (doneDate, not date).
+  const doneToday = todos.filter((t) => t.done && t.doneDate === iso);
   const total = active.length + doneToday.length;
   const pct = total ? Math.round((doneToday.length / total) * 100) : 0;
   const now = new Date();
@@ -155,8 +163,12 @@ export default function App() {
 
           {doneToday.length > 0 && (
             <section className="done-section">
-              <button className="done-header" onClick={() => setShowDone((s) => !s)}>
-                <span className={`chevron ${showDone ? 'open' : ''}`}>▸</span>
+              <button
+                className="done-header"
+                aria-expanded={showDone}
+                onClick={() => setShowDone((s) => !s)}
+              >
+                <span className={`chevron ${showDone ? 'open' : ''}`} aria-hidden="true">▸</span>
                 Completed ({doneToday.length})
               </button>
               {showDone && (
