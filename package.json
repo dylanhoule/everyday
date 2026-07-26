@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "icons": "node scripts/gen-icons.mjs",
+    "gen-plan": "node scripts/gen-plan.mjs",
     "test": "node src/swipe.test.js && node src/date.test.js && node src/plan.test.js && node src/merge.test.js"
   },
   "dependencies": {

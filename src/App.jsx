@@ -3,12 +3,12 @@ import { AnimatePresence, motion } from 'motion/react';
 import TodoItem from './TodoItem.jsx';
 import Calendar from './Calendar.jsx';
 import { today } from './date.js';
-import { PLAN } from './plan.js';
+import { PLAN, PLAN_VERSION } from './plan.js';
 import { merge, purge } from './merge.js';
 import { pull, push } from './sync.js';
 
 const KEY = 'todos';
-const SEED_KEY = 'planSeeded-v1'; // one-shot guard so the plan isn't re-injected each load
+const SEED_KEY = 'planSeeded-v1'; // holds the seeded PLAN_VERSION; a new plan re-seeds once
 const DIAL_C = 2 * Math.PI * 52; // circumference of the progress dial
 
 function load() {
@@ -20,10 +20,11 @@ function load() {
           .map((t) => (t.date ? t : { ...t, date: today() }))
           .map((t) => (t.done && !t.doneDate ? { ...t, doneDate: t.date } : t))
       : [];
-    // Seed the training plan once. Only today-or-future items, so seeding mid-plan
-    // doesn't flood the Today view (which rolls all past-incomplete tasks forward).
-    if (!localStorage.getItem(SEED_KEY)) {
-      localStorage.setItem(SEED_KEY, '1');
+    // Seed the plan when its version changes (new/changed plan). Only today-or-future
+    // items, so seeding mid-plan doesn't flood the Today view; dedup by id means new plans
+    // add alongside existing tasks without touching what's already there.
+    if (localStorage.getItem(SEED_KEY) !== PLAN_VERSION) {
+      localStorage.setItem(SEED_KEY, PLAN_VERSION);
       const t = today();
       const have = new Set(todos.map((x) => x.id));
       todos = [...PLAN.filter((p) => p.date >= t && !have.has(p.id)), ...todos];
