@@ -56,6 +56,17 @@ for (const line of md.split('\n')) {
         tasks.push({ id: `plan-${date}-strength-${i}`, text: `💪 ${ex}`, done: false, date });
       });
   }
+
+  // Generic daily-task plans — table `| Day | Session | What to do |`. Any weekday row that
+  // is neither a run (integer miles) nor a strength block → one todo per day: the session
+  // label + the instruction. Running rows always match run/strength, so this never fires
+  // for them and their output stays identical.
+  if (!/^\d+$/.test(miles) && !isStrength) {
+    const what = strip(cells[3] || '');
+    if (what && what !== '–' && what !== '-') {
+      tasks.push({ id: `plan-${date}-task`, text: `📌 ${session ? `${session} — ` : ''}${what}`, done: false, date });
+    }
+  }
 }
 
 // Content version so App.jsx re-seeds a new/changed plan (a boolean flag never would).
