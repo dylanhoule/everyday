@@ -68,4 +68,4 @@ Id kinds are validated by `src/plan.test.js`: `run` · `lift` · `fuel` · `weig
 `strength-<n>` · `task`. **One id per date per kind** — adding a second task of the same kind
 on a day needs a new suffix, plus a regex update in `plan.test.js`.
 
-Emoji convention: `🏃` run · `🏁` race · `💪` lift · `🍽` nutrition · `⚖️` weigh-in · `📌` other.
+Emoji convention: `🏃` run · `🏁` race · `💪` lift · `🥗` nutrition · `📊` weigh-in · `📌` other.

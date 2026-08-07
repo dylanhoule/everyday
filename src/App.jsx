@@ -9,6 +9,7 @@ import { pull, push } from './sync.js';
 
 const KEY = 'todos';
 const SEED_KEY = 'planSeeded-v1'; // holds the seeded PLAN_VERSION; a new plan re-seeds once
+const PLAN_IDS = new Set(PLAN.map((p) => p.id)); // the current plan is the authority on what's live
 const DIAL_C = 2 * Math.PI * 52; // circumference of the progress dial
 
 function load() {
@@ -20,19 +21,31 @@ function load() {
           .map((t) => (t.date ? t : { ...t, date: today() }))
           .map((t) => (t.done && !t.doneDate ? { ...t, doneDate: t.date } : t))
       : [];
-    // Seed the plan when its version changes (new/changed plan). Only today-or-future
-    // items, so seeding mid-plan doesn't flood the Today view; dedup by id keeps existing
-    // records. Then retire whatever the previous plan left behind — "a new plan arrived"
-    // is exactly the trigger for "drop the old one".
+    // Seed the plan when its version changes. Only today-or-future items, so seeding
+    // mid-plan doesn't flood the Today view.
     if (localStorage.getItem(SEED_KEY) !== PLAN_VERSION) {
       localStorage.setItem(SEED_KEY, PLAN_VERSION);
       const t = today();
+      const now = Date.now();
+      const upcoming = PLAN.filter((p) => p.date >= t);
+      const fresh = new Map(upcoming.map((p) => [p.id, p]));
+      // The plan owns the text of its own tasks. Ids are date+kind, so a new plan reuses
+      // the ids of the one it replaces — without this the old wording survives forever
+      // behind the dedup below. done/deleted stay the user's; the stamp is what beats a
+      // stale copy of the old plan still sitting in the sync store.
+      todos = todos.map((x) => {
+        const p = fresh.get(x.id);
+        return p && !x.done && !x.deleted ? { ...x, ...p, updatedAt: now } : x;
+      });
       const have = new Set(todos.map((x) => x.id));
-      todos = [...PLAN.filter((p) => p.date >= t && !have.has(p.id)), ...todos];
-      todos = retireStale(todos, new Set(PLAN.map((p) => p.id)));
+      todos = [...upcoming.filter((p) => !have.has(p.id)), ...todos];
     }
+    // Retire superseded plan tasks on every load, not just on the version bump: a one-shot
+    // pass only sees what localStorage happened to hold at that instant, so anything the
+    // old plan had left in the sync store would come back on the next pull and stay.
     // Backfill updatedAt (legacy/seed items lack it → 0, so any real edit wins the
     // merge) and drop stale tombstones.
+    todos = retireStale(todos, PLAN_IDS);
     return purge(todos.map((t) => (t.updatedAt ? t : { ...t, updatedAt: 0 })));
   } catch {
     return [];
@@ -56,7 +69,9 @@ export default function App() {
     let cancelled = false;
     const syncNow = async () => {
       const remote = await pull();
-      if (!cancelled && remote) setTodos((cur) => purge(merge(cur, remote)));
+      // retireStale again here: the remote blob can still carry a superseded plan's tasks,
+      // and merge() would happily bring them back to life.
+      if (!cancelled && remote) setTodos((cur) => purge(retireStale(merge(cur, remote), PLAN_IDS)));
     };
     syncNow();
     const onVis = () => document.visibilityState === 'visible' && syncNow();

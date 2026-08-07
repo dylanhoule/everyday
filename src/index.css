@@ -303,7 +303,7 @@ body {
 .row-face {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* multi-line tasks: controls sit on the title line, not centred */
   gap: 14px;
   padding: 15px 14px 15px 16px;
   min-height: 56px;
@@ -326,6 +326,7 @@ body {
 .check {
   position: relative;
   flex: none;
+  margin-top: 3px; /* optically centre on the title line, not the whole block */
   width: 26px;
   height: 26px;
   border-radius: 8px;
@@ -394,6 +395,19 @@ body {
 .text-inner {
   position: relative;
 }
+/* Multi-line tasks render as `title\ndetail…` — the title carries the strike-through
+   wipe, the rest is a quieter block with one item per line. */
+.text:has(.text-detail) .text-inner {
+  font-weight: 550;
+}
+.text-detail {
+  display: block;
+  margin-top: 5px;
+  white-space: pre-wrap; /* the generator's \n are real line breaks */
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--muted);
+}
 .text-inner::after {
   content: '';
   position: absolute;
@@ -422,11 +436,14 @@ body {
   caret-color: var(--accent);
   outline: none;
   padding: 4px 0;
+  resize: none; /* a <textarea>, so multi-line task text keeps its newlines */
+  line-height: 1.5;
 }
 
 .x {
   position: relative;
   flex: none;
+  margin-top: 3px;
   border: none;
   background: transparent;
   color: var(--muted);

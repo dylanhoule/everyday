@@ -55,6 +55,8 @@ export default function TodoItem({ todo, leaveOnComplete = false, onToggle, onEd
   };
 
   const done = todo.done || checking;
+  // Line 1 is the title (it carries the strike-through); the rest is the detail block.
+  const [title, ...detail] = todo.text.split('\n');
 
   return (
     <motion.li
@@ -95,13 +97,15 @@ export default function TodoItem({ todo, leaveOnComplete = false, onToggle, onEd
         </button>
 
         {editing ? (
-          <input
+          // textarea, not input: multi-line task text would be stripped of its newlines.
+          <textarea
             className="edit-input"
+            rows={detail.length + 1}
             defaultValue={todo.text}
             autoFocus
             onBlur={saveEdit}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') e.target.blur();
+              if (e.key === 'Enter' && !e.shiftKey) e.target.blur(); // shift+enter = new line
               if (e.key === 'Escape') {
                 e.target.value = todo.text;
                 e.target.blur();
@@ -122,7 +126,8 @@ export default function TodoItem({ todo, leaveOnComplete = false, onToggle, onEd
               }
             }}
           >
-            <span className="text-inner">{todo.text}</span>
+            <span className="text-inner">{title}</span>
+            {detail.length > 0 && <span className="text-detail">{detail.join('\n')}</span>}
           </span>
         )}
 
