@@ -17,12 +17,13 @@ export function merge(a, b) {
   return [...byId.values()];
 }
 
-// One-shot retirement of the networking/calisthenics seeds — tombstones rather than plain
-// removals so the retirement propagates through merge() to other devices and to the sync store.
-// Done tasks are left alone: they're history of what actually happened.
-export function retireNonRun(list, now = Date.now()) {
+// Retire leftovers from a superseded plan — any seeded task the current PLAN no longer has.
+// Tombstones rather than plain removals so the retirement propagates through merge() to other
+// devices and to the sync store. Done tasks are left alone: they're history of what happened,
+// and user-added tasks have UUID ids, so the `plan-` prefix check never touches them.
+export function retireStale(list, keepIds, now = Date.now()) {
   return list.map((t) =>
-    t.id.startsWith('plan-') && !t.id.endsWith('-run') && !t.done && !t.deleted
+    t.id.startsWith('plan-') && !keepIds.has(t.id) && !t.done && !t.deleted
       ? { ...t, deleted: true, updatedAt: now }
       : t
   );

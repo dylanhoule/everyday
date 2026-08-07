@@ -7,7 +7,7 @@ assert.ok(typeof PLAN_VERSION === 'string' && PLAN_VERSION.length > 0, 'missing 
 
 const ids = new Set();
 for (const t of PLAN) {
-  assert.match(t.id, /^plan-\d{4}-\d{2}-\d{2}-(run|strength-\d+|task)$/, `bad id: ${t.id}`);
+  assert.match(t.id, /^plan-\d{4}-\d{2}-\d{2}-(run|strength-\d+|lift|fuel|weigh|task)$/, `bad id: ${t.id}`);
   assert.equal(ids.has(t.id), false, `duplicate id: ${t.id}`); // ids must be unique for idempotent seeding
   ids.add(t.id);
   assert.match(t.date, /^\d{4}-\d{2}-\d{2}$/, `bad date: ${t.date}`);

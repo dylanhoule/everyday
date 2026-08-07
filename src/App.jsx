@@ -4,12 +4,11 @@ import TodoItem from './TodoItem.jsx';
 import Calendar from './Calendar.jsx';
 import { today } from './date.js';
 import { PLAN, PLAN_VERSION } from './plan.js';
-import { merge, purge, retireNonRun } from './merge.js';
+import { merge, purge, retireStale } from './merge.js';
 import { pull, push } from './sync.js';
 
 const KEY = 'todos';
 const SEED_KEY = 'planSeeded-v1'; // holds the seeded PLAN_VERSION; a new plan re-seeds once
-const RETIRE_KEY = 'retiredNonRun-v1';
 const DIAL_C = 2 * Math.PI * 52; // circumference of the progress dial
 
 function load() {
@@ -22,18 +21,15 @@ function load() {
           .map((t) => (t.done && !t.doneDate ? { ...t, doneDate: t.date } : t))
       : [];
     // Seed the plan when its version changes (new/changed plan). Only today-or-future
-    // items, so seeding mid-plan doesn't flood the Today view; dedup by id means new plans
-    // add alongside existing tasks without touching what's already there.
+    // items, so seeding mid-plan doesn't flood the Today view; dedup by id keeps existing
+    // records. Then retire whatever the previous plan left behind — "a new plan arrived"
+    // is exactly the trigger for "drop the old one".
     if (localStorage.getItem(SEED_KEY) !== PLAN_VERSION) {
       localStorage.setItem(SEED_KEY, PLAN_VERSION);
       const t = today();
       const have = new Set(todos.map((x) => x.id));
       todos = [...PLAN.filter((p) => p.date >= t && !have.has(p.id)), ...todos];
-    }
-    // ponytail: one-shot migration, deletable once every device has synced past it.
-    if (!localStorage.getItem(RETIRE_KEY)) {
-      localStorage.setItem(RETIRE_KEY, '1');
-      todos = retireNonRun(todos);
+      todos = retireStale(todos, new Set(PLAN.map((p) => p.id)));
     }
     // Backfill updatedAt (legacy/seed items lack it → 0, so any real edit wins the
     // merge) and drop stale tombstones.

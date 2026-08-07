@@ -1,85 +1,71 @@
 ---
 name: seed-plan
 description: >-
-  Seed a new AI-generated markdown plan into the everyday app and stage it for deploy.
-  Use when the user says "seed a plan", "push a new plan", "/seed-plan <file>", "load this
-  plan into the app", or hands over a markdown daily-task plan like excersiceplan.md.
-  Regenerates src/plan.js, runs tests, and commits locally — it does NOT push (the user
-  pushes to master to trigger the Vercel production deploy).
+  Reseed the everyday app's daily plan from NEWPLAN.md. Use when the user says "seed a plan",
+  "push a new plan", "/seed-plan", "load this plan into the app", or asks to change the
+  training/nutrition schedule. Regenerates src/plan.js, runs tests, and commits locally — it
+  does NOT push (the user pushes to master to trigger the Vercel production deploy).
 ---
 
 # seed-plan
 
-Turn a markdown daily-task plan into the app's seeded plan data, ready for the user to
-push. New plans **add alongside** whatever is already in the app; this skill **commits
-locally and stops before pushing**.
+The app's plan is generated **programmatically**, not parsed from markdown. `NEWPLAN.md` is
+the human-readable source of truth; `scripts/gen-plan.mjs` holds the machine-readable mirror
+of it (weekly template + phase/nutrition/rotation tables) and expands it across dates.
 
-## Pipeline (why these steps)
+## Pipeline
 
 ```
-<plan>.md → myplan.md → node scripts/gen-plan.mjs → src/plan.js (PLAN + PLAN_VERSION)
-          → npm test → git commit (local) → user pushes → Vercel deploys prod
+NEWPLAN.md ──(mirrored by hand)──> scripts/gen-plan.mjs
+  → npm run gen-plan → src/plan.js (PLAN + PLAN_VERSION)
+  → npm test → git commit (local) → user pushes → Vercel deploys prod
 ```
 
-`gen-plan.mjs` reads the daily-plan tables; `App.jsx` re-seeds today-or-future tasks
-whenever `PLAN_VERSION` changes (dedup by id, so existing tasks are untouched).
+`App.jsx` `load()` seeds today-or-future tasks whenever `PLAN_VERSION` changes, then calls
+`retireStale(todos, new Set(PLAN.map(p => p.id)))` to tombstone anything the previous plan
+left behind. **Done tasks and manual todos always survive** — only undone `plan-*` ids that
+the new plan doesn't contain get retired.
 
 ## Steps
 
-1. **Get the path.** The plan file path is the skill argument (e.g. `/seed-plan ./newplan.md`).
-   If none was given, ask for it. Error out if the file doesn't exist. Run everything from
-   the repo root (`/Users/dylanhoule/projects/everyday`).
+1. **Edit `NEWPLAN.md` first** (it's what the user reads), then mirror the change into the
+   corresponding table in `scripts/gen-plan.mjs`. Run everything from the repo root
+   (`/Users/dylanhoule/projects/everyday`).
 
-2. **Validate the format** before touching anything (see **Format** below). Quick checks:
-   - `grep -q 'Plan start:.*[0-9]\{4\}' <file>` — needs a start year.
-   - `grep -qE '^\|\s*\**(Mon|Tue|Wed|Thu|Fri|Sat|Sun) [0-9]{2}/[0-9]{2}' <file>` — needs
-     weekday daily rows.
-   If either fails, tell the user exactly what's missing (per **Format**) and stop.
+2. **Regenerate:** `npm run gen-plan`. Rewrites `src/plan.js` and prints task count + version.
 
-3. **Copy** the file to the repo root as `myplan.md` (the tracked source `gen-plan.mjs`
-   defaults to). This un-deletes it if it was removed.
+3. **Test:** `npm test`. If it fails, show the output and **stop** — do not commit.
 
-4. **Regenerate:** `npm run gen-plan` (or `node scripts/gen-plan.mjs`). It rewrites
-   `src/plan.js` with correct years and a fresh `PLAN_VERSION`, and prints the task count
-   and version.
-
-5. **Test:** `npm test`. If it fails, show the output and **stop** — do not commit.
-
-6. **Summarize** so the user can eyeball it: task count, date range (first → last), and
-   2–3 sample task lines. One-liner to get the range + count:
+4. **Summarize** so the user can eyeball it: task count, date range, and a sample day.
    ```
    node -e "import('./src/plan.js').then(m=>{const d=m.PLAN.map(t=>t.date).sort();console.log(m.PLAN.length,'tasks',d[0],'→',d.at(-1),'v'+m.PLAN_VERSION)})"
    ```
+   Worth spot-checking after any schedule edit: weekly mileage sums, phase boundary dates,
+   cutback weeks, and that every date in the range is present.
 
-7. **Commit locally (do NOT push):**
+5. **Commit locally (do NOT push):**
    ```
-   git add myplan.md src/plan.js
+   git add NEWPLAN.md scripts/gen-plan.mjs src/plan.js
    git commit -m "seed plan: <first>–<last> (<N> tasks)"
    ```
    Only add files that actually changed. End the commit message with the required trailer:
-   `Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>`.
+   `Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>`.
 
-8. **Hand off.** Show `git diff --stat HEAD~1` (or the commit) and tell the user:
+6. **Hand off.** Show `git diff --stat HEAD~1` and tell the user:
    > Committed locally. Run `git push origin master` to deploy to production (Vercel).
+
    Push only if they explicitly say to.
 
-9. **Behavior note for the user:** on the next app load the new plan's today-or-future
-   tasks append; existing tasks and manual todos are preserved (`PLAN_VERSION` bumped, so
-   it re-seeds exactly once).
+## Task shape
 
-## Format the plan must follow
+Four fields, one per line in `src/plan.js`:
 
-The generator only reads weekday rows of daily tables; all other tables/prose are ignored.
-A compatible plan needs:
+```js
+{"id":"plan-2026-08-10-lift","text":"💪 Pull A — …","done":false,"date":"2026-08-10"}
+```
 
-- A `**Plan start:** … <YYYY>` line — any text on that line containing the 4-digit start
-  year. The year rolls forward automatically each time the month wraps (rows must be
-  chronological).
-- Daily tables `| Day | Session | Miles | Detail |`:
-  - **Day**: starts with a 3-letter weekday + `MM/DD`, e.g. `Mon 07/20` (bold is fine).
-  - **Miles**: a bare integer → a `🏃` run task (`🏁` if the Session contains `RACE:`);
-    `–` (or non-numeric) → no run task.
-  - **Detail**: a plain note becomes the run's `· …` suffix; a
-    `**Strength X – …** [Blk N]: a; b. Core: c; d` block becomes one `💪` task per exercise.
+Id kinds are validated by `src/plan.test.js`: `run` · `lift` · `fuel` · `weigh` ·
+`strength-<n>` · `task`. **One id per date per kind** — adding a second task of the same kind
+on a day needs a new suffix, plus a regex update in `plan.test.js`.
 
-See `excersiceplan.md` for a full reference example.
+Emoji convention: `🏃` run · `🏁` race · `💪` lift · `🍽` nutrition · `⚖️` weigh-in · `📌` other.

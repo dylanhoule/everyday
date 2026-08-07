@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { merge, purge, retireNonRun } from './merge.js';
+import { merge, purge, retireStale } from './merge.js';
 
 // newer updatedAt wins, regardless of argument order
 assert.equal(merge([{ id: '1', text: 'old', updatedAt: 100 }], [{ id: '1', text: 'new', updatedAt: 200 }])[0].text, 'new');
@@ -29,18 +29,22 @@ const kept = purge(
 ).map((t) => t.id);
 assert.deepEqual(kept.sort(), ['b', 'c']);
 
-// retireNonRun tombstones undone non-run seeds only — runs, done history, and the user's
-// own tasks are untouched, and existing tombstones keep their original timestamp.
+// retireStale tombstones undone seeds the current plan no longer has — tasks still in the
+// plan, done history, and the user's own tasks are untouched, and existing tombstones keep
+// their original timestamp.
+const keep = new Set(['plan-2026-09-01-run', 'plan-2026-09-01-lift']);
 const retired = Object.fromEntries(
-  retireNonRun(
+  retireStale(
     [
-      { id: 'plan-2026-09-01-strength-1', done: false }, //     undone calisthenics → tombstoned
-      { id: 'plan-2026-09-01-task', done: false }, //            undone networking   → tombstoned
-      { id: 'plan-2026-09-01-run', done: false }, //             a run               → kept
+      { id: 'plan-2026-09-01-strength-1', done: false }, //     dropped by new plan → tombstoned
+      { id: 'plan-2026-09-01-task', done: false }, //            dropped by new plan → tombstoned
+      { id: 'plan-2026-09-01-run', done: false }, //             still in the plan   → kept
+      { id: 'plan-2026-09-01-lift', done: false }, //            still in the plan   → kept
       { id: 'plan-2026-08-01-strength-1', done: true }, //       done history        → kept
       { id: '3f1a-user-added', done: false }, //                 user's own task     → kept
       { id: 'plan-2026-08-02-task', deleted: true, updatedAt: 5 }, // already gone   → unchanged
     ],
+    keep,
     now
   ).map((t) => [t.id, t])
 );
