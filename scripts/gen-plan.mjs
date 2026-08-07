@@ -93,6 +93,11 @@ for (let week = 1; week <= WEEKS; week++) {
       : `🥗 ${split1(FUEL[day], ' · ')}`);
 
     if (WEIGH_DAYS.includes(day)) add('weigh', WEIGH);
+
+    // The plan runs out at the end of week 12, so put the reseed reminder at the start of
+    // it — a week of runway rather than a nasty surprise on the last day.
+    if (week === WEEKS && day === 'Mon')
+      add('task', '📌 Seed Phase 2 — last week of the cut\nEdit the tables in scripts/gen-plan.mjs, then: npm run gen-plan && npm test.\nSet the new calories off your last 3 weeks of scale data, not the table — NEWPLAN calls every number in it a starting hypothesis.\nRunning goes to 25 mi/wk FLAT. Do not let the long run creep past 7.');
   }
 }
 
