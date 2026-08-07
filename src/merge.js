@@ -17,6 +17,17 @@ export function merge(a, b) {
   return [...byId.values()];
 }
 
+// One-shot retirement of the networking/calisthenics seeds — tombstones rather than plain
+// removals so the retirement propagates through merge() to other devices and to the sync store.
+// Done tasks are left alone: they're history of what actually happened.
+export function retireNonRun(list, now = Date.now()) {
+  return list.map((t) =>
+    t.id.startsWith('plan-') && !t.id.endsWith('-run') && !t.done && !t.deleted
+      ? { ...t, deleted: true, updatedAt: now }
+      : t
+  );
+}
+
 // Drop tombstones older than PURGE_MS. `now` is injectable for testing.
 export function purge(list, now = Date.now()) {
   return list.filter((t) => !(t.deleted && now - ts(t) > PURGE_MS));

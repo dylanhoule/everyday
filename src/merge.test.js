@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { merge, purge } from './merge.js';
+import { merge, purge, retireNonRun } from './merge.js';
 
 // newer updatedAt wins, regardless of argument order
 assert.equal(merge([{ id: '1', text: 'old', updatedAt: 100 }], [{ id: '1', text: 'new', updatedAt: 200 }])[0].text, 'new');
@@ -28,5 +28,30 @@ const kept = purge(
   now
 ).map((t) => t.id);
 assert.deepEqual(kept.sort(), ['b', 'c']);
+
+// retireNonRun tombstones undone non-run seeds only — runs, done history, and the user's
+// own tasks are untouched, and existing tombstones keep their original timestamp.
+const retired = Object.fromEntries(
+  retireNonRun(
+    [
+      { id: 'plan-2026-09-01-strength-1', done: false }, //     undone calisthenics → tombstoned
+      { id: 'plan-2026-09-01-task', done: false }, //            undone networking   → tombstoned
+      { id: 'plan-2026-09-01-run', done: false }, //             a run               → kept
+      { id: 'plan-2026-08-01-strength-1', done: true }, //       done history        → kept
+      { id: '3f1a-user-added', done: false }, //                 user's own task     → kept
+      { id: 'plan-2026-08-02-task', deleted: true, updatedAt: 5 }, // already gone   → unchanged
+    ],
+    now
+  ).map((t) => [t.id, t])
+);
+assert.deepEqual(
+  Object.values(retired)
+    .filter((t) => t.deleted)
+    .map((t) => t.id)
+    .sort(),
+  ['plan-2026-08-02-task', 'plan-2026-09-01-strength-1', 'plan-2026-09-01-task']
+);
+assert.equal(retired['plan-2026-09-01-strength-1'].updatedAt, now);
+assert.equal(retired['plan-2026-08-02-task'].updatedAt, 5); // no tombstone refresh
 
 console.log('merge.test.js: all assertions passed');

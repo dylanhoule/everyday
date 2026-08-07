@@ -4,11 +4,12 @@ import TodoItem from './TodoItem.jsx';
 import Calendar from './Calendar.jsx';
 import { today } from './date.js';
 import { PLAN, PLAN_VERSION } from './plan.js';
-import { merge, purge } from './merge.js';
+import { merge, purge, retireNonRun } from './merge.js';
 import { pull, push } from './sync.js';
 
 const KEY = 'todos';
 const SEED_KEY = 'planSeeded-v1'; // holds the seeded PLAN_VERSION; a new plan re-seeds once
+const RETIRE_KEY = 'retiredNonRun-v1';
 const DIAL_C = 2 * Math.PI * 52; // circumference of the progress dial
 
 function load() {
@@ -28,6 +29,11 @@ function load() {
       const t = today();
       const have = new Set(todos.map((x) => x.id));
       todos = [...PLAN.filter((p) => p.date >= t && !have.has(p.id)), ...todos];
+    }
+    // ponytail: one-shot migration, deletable once every device has synced past it.
+    if (!localStorage.getItem(RETIRE_KEY)) {
+      localStorage.setItem(RETIRE_KEY, '1');
+      todos = retireNonRun(todos);
     }
     // Backfill updatedAt (legacy/seed items lack it → 0, so any real edit wins the
     // merge) and drop stale tombstones.
