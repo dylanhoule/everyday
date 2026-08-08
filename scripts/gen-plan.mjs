@@ -10,9 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const START = '2026-08-10'; // Monday
-const WEEKS = 12; // Phase 1 cut: Aug 10 → Nov 1 ("Now → ~Nov 1 (12 wks)")
-const DIET_BREAK_WEEK = 6; // NEWPLAN: "at week 6, eat at maintenance for one full week"
-const MAINTENANCE = '2,780 kcal · 165g P';
+const WEEKS = 11; // Phase 1 cut: Aug 10 → Oct 25. Deficit ends Oct 26, or at 155 lb, whichever comes first.
 
 // [session name, exercises]. One exercise per line in the app (see TodoItem: the first
 // line is the title, the rest render as the detail block).
@@ -24,8 +22,8 @@ const LIFTS = {
   Sat: ['Push B · delts, arms, forearms', ['Seated DB shoulder press — 3 × 8-10', 'Cable lateral raise — 4 × 12-15', 'Machine or cable chest press — 3 × 10-12', 'Overhead cable tricep extension — 3 × 12-15', 'Wrist curl + reverse wrist curl — 3 × 15 each', 'Hanging leg raise — 3 × max']],
 };
 
-// Phase 1 nutrition table, verbatim from NEWPLAN.md. Weekly average 2,450.
-const FUEL = { Mon: '2,300 kcal · 165g P · 240g C · 75g F', Tue: '2,450 kcal · 165g P · 290g C · 70g F', Wed: '2,550 kcal · 165g P · 325g C · 65g F', Thu: '2,400 kcal · 165g P · 280g C · 70g F', Fri: '2,300 kcal · 165g P · 240g C · 75g F', Sat: '2,450 kcal · 165g P · 290g C · 70g F', Sun: '2,700 kcal · 165g P · 365g C · 65g F' };
+// Phase 1 nutrition table, verbatim from NEWPLAN.md. Weekly average 2,550.
+const FUEL = { Mon: '2,400 kcal · 165g P · 265g C · 75g F', Tue: '2,550 kcal · 165g P · 315g C · 70g F', Wed: '2,650 kcal · 165g P · 350g C · 65g F', Thu: '2,500 kcal · 165g P · 300g C · 70g F', Fri: '2,450 kcal · 165g P · 280g C · 75g F', Sat: '2,550 kcal · 165g P · 315g C · 70g F', Sun: '2,750 kcal · 165g P · 375g C · 65g F' };
 
 // Phase 1 mileage: 22 mi/week FLAT (NEWPLAN rule 3 — "Do not creep"). Every 4th week
 // cuts back to ~17. The cutback day-by-day split is ours; NEWPLAN gives only the total.
@@ -87,17 +85,15 @@ for (let week = 1; week <= WEEKS; week++) {
       add('lift', `💪 ${head}\n${exercises.join('\n')}`);
     }
 
-    // Daily fuel target; week 6 of the cut is the maintenance diet break.
-    add('fuel', week === DIET_BREAK_WEEK
-      ? `🥗 ${split1(MAINTENANCE, ' · ')}\nDiet break — eat at maintenance all week.`
-      : `🥗 ${split1(FUEL[day], ' · ')}`);
+    // Daily fuel target.
+    add('fuel', `🥗 ${split1(FUEL[day], ' · ')}`);
 
     if (WEIGH_DAYS.includes(day)) add('weigh', WEIGH);
 
     // The plan runs out at the end of week 12, so put the reseed reminder at the start of
     // it — a week of runway rather than a nasty surprise on the last day.
     if (week === WEEKS && day === 'Mon')
-      add('task', '📌 Seed Phase 2 — last week of the cut\nEdit the tables in scripts/gen-plan.mjs, then: npm run gen-plan && npm test.\nSet the new calories off your last 3 weeks of scale data, not the table — NEWPLAN calls every number in it a starting hypothesis.\nRunning goes to 25 mi/wk FLAT. Do not let the long run creep past 7.');
+      add('task', '📌 Seed Phase 2 — last week of the cut\nThe cut ends Mon Oct 26, or the day you hit 155 lb, whichever comes first.\nEdit the tables in scripts/gen-plan.mjs, then: npm run gen-plan && npm test.\nSet the new calories off your last 3 weeks of scale data, not the table — NEWPLAN calls every number in it a starting hypothesis.\nRunning goes to 25 mi/wk FLAT. Do not let the long run creep past 7.');
   }
 }
 

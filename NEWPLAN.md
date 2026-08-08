@@ -24,7 +24,7 @@ So the 28-week 50K plan goes on the shelf. Running stays **flat at 22-25 mi/week
 
 | Phase | When | Running | Calories | Goal |
 |---|---|---|---|---|
-| **1 — Cut** | Now → ~Nov 1 (12 wks) | 22 mi/wk flat | 2,450 avg | 165 → 158 lb, ~12% BF |
+| **1 — Cut** | Now → Oct 26, 2026 or 155 lb (11 wks) | 22 mi/wk flat | 2,550 avg | 165 → 158 lb, ~12% BF |
 | **2 — Lean gain** | Nov 2026 → 12-18 months | 25 mi/wk flat | 3,150 | Build the width |
 | **3 — 50K build** | When you pick a date | 25 → 48 mi/wk | Maintenance only | Race |
 
@@ -192,21 +192,21 @@ That's 2,780 at 22 mi/week and 2,820 at 25. It's built from your actual resting 
 
 **Every calorie number below is a starting hypothesis.** Three weeks of scale data overrides it.
 
-## Phase 1 — Cut (now → ~Nov 1)
+## Phase 1 — Cut (now → Oct 26)
 
-**Weekly average 2,450. Protein 165 g every day, no exceptions. Fat floor 60 g.**
+**Weekly average 2,550. Protein 165 g every day, no exceptions. Fat floor 60 g.**
 
 | Day | Training | Kcal | Protein | Carbs | Fat |
 |---|---|---|---|---|---|
-| **Mon** | Pull A | 2,300 | 165 g | 240 g | 75 g |
-| **Tue** | Easy run + Push A | 2,450 | 165 g | 290 g | 70 g |
-| **Wed** | Quality run | 2,550 | 165 g | 325 g | 65 g |
-| **Thu** | Easy run + legs | 2,400 | 165 g | 280 g | 70 g |
-| **Fri** | Pull B | 2,300 | 165 g | 240 g | 75 g |
-| **Sat** | Easy run + Push B | 2,450 | 165 g | 290 g | 70 g |
-| **Sun** | Long run | 2,700 | 165 g | 365 g | 65 g |
+| **Mon** | Pull A | 2,400 | 165 g | 265 g | 75 g |
+| **Tue** | Easy run + Push A | 2,550 | 165 g | 315 g | 70 g |
+| **Wed** | Quality run | 2,650 | 165 g | 350 g | 65 g |
+| **Thu** | Easy run + legs | 2,500 | 165 g | 300 g | 70 g |
+| **Fri** | Pull B | 2,450 | 165 g | 280 g | 75 g |
+| **Sat** | Easy run + Push B | 2,550 | 165 g | 315 g | 70 g |
+| **Sun** | Long run | 2,750 | 165 g | 375 g | 65 g |
 
-~400/day below maintenance. Expect **0.7-0.8 lb/week.** 165 → ~158 lb in 12 weeks, landing near 12% body fat.
+~230/day below maintenance. The deficit block ends 2026-10-26, or the day the scale reads 155 lb, whichever comes first.
 
 **Why the low days are lift days, not rest days:** lifting is far less glycogen-dependent than running, and Mon/Fri have no running at all. The fat-loss benefit of carb cycling is zero once calories and protein match — what it buys is performance timing.
 
@@ -220,10 +220,6 @@ That's 2,780 at 22 mi/week and 2,820 at 25. It's built from your actual resting 
 - Cold hands, drop in libido, persistent low mood
 
 Two or more and you're underfueling. The fix is food, not more discipline. This is the most common failure mode for people who run and lift at the same time, and it does not announce itself as hunger.
-
-### Diet break
-
-At week 6, eat at maintenance (2,780) for one full week. Then resume. This is not a cheat week — it's a hormonal and psychological reset that makes the back half of the cut work.
 
 ## Phase 2 — Lean gain (Nov onward)
 
@@ -245,9 +241,7 @@ Target **0.3-0.4 lb/week.** Faster than that at your training age is mostly fat,
 
 ## Protein
 
-Four feedings of ~40 g, not two of 65 g plus scattered incidentals. Muscle protein synthesis responds per meal and there's a ceiling per feeding.
-
-One feeding within an hour of every lift and every long run. A pre-sleep dose of 40 g casein or Greek yogurt is worth it on lift days.
+One feeding within an hour of every lift and every long run.
 
 **Easy 30-35 g additions if you're short:**
 
@@ -285,7 +279,7 @@ At 7-9 mile long runs you don't strictly need in-run fuel. **Practice it anyway.
 
 ## Micronutrients
 
-**Iron.** Runners lose iron through foot-strike hemolysis and sweat. **Get ferritin tested before supplementing** — iron overload is worse than deficiency. Below 30 ng/mL and you'll feel it in your runs.
+**Iron.** Runners lose iron through foot-strike hemolysis and sweat. Don't supplement iron blind: iron overload is worse than deficiency.
 
 **Vitamin D.** Test it. Drives bone density, which is the thing at risk here.
 
@@ -308,12 +302,12 @@ Weigh **three mornings a week**, same conditions — after the bathroom, before 
 
 | Phase | Signal | Action |
 |---|---|---|
-| Cut | Losing >1 lb/week | Add 200 kcal/day |
-| Cut | Losing <0.4 lb/week for 3 wks | Cut 150 kcal/day |
+| Cut | Losing >0.8 lb/week | Add 200 kcal/day |
+| Cut | Losing <0.25 lb/week over 3 wks | Cut 150 kcal/day |
 | Lean gain | Gaining >0.5 lb/week | Cut 150 kcal/day |
 | Lean gain | Flat for 3 wks | Add 200 kcal/day |
 
-**Also track, every week:** weighted pull-up top set, overhead press top set, resting heart rate, and a photo in the same light and pose. The scale alone will mislead you in Phase 2 — the photos and the pull-up number are the real progress markers.
+**Also track, every week:** weighted pull-up top set, overhead press top set, and a photo in the same light and pose. The scale alone will mislead you in Phase 2 — the photos and the pull-up number are the real progress markers.
 
 Three weeks of data beats any calculator, including this one. Your actual expenditure could be 15% off in either direction.
 
@@ -363,4 +357,4 @@ Getting lean is the fast part. The width is the long project.
 
 ---
 
-*General, evidence-informed plan, not medical advice. Get ferritin and vitamin D tested before supplementing either. With any injury, health condition, or gait-altering pain, see a sports-medicine professional first.*
+*General, evidence-informed plan, not medical advice. Get vitamin D tested before supplementing it. With any injury, health condition, or gait-altering pain, see a sports-medicine professional first.*
