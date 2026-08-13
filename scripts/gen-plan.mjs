@@ -23,7 +23,31 @@ const LIFTS = {
 };
 
 // Phase 1 nutrition table, verbatim from NEWPLAN.md. Weekly average 2,550.
-const FUEL = { Mon: '2,400 kcal · 165g P · 265g C · 75g F', Tue: '2,550 kcal · 165g P · 315g C · 70g F', Wed: '2,650 kcal · 165g P · 350g C · 65g F', Thu: '2,500 kcal · 165g P · 300g C · 70g F', Fri: '2,450 kcal · 165g P · 280g C · 75g F', Sat: '2,550 kcal · 165g P · 315g C · 70g F', Sun: '2,750 kcal · 165g P · 375g C · 65g F' };
+const FUEL = { Mon: '2,575 kcal · 165g P · 310g C · 75g F', Tue: '2,550 kcal · 165g P · 315g C · 70g F', Wed: '2,650 kcal · 165g P · 350g C · 65g F', Thu: '2,500 kcal · 165g P · 300g C · 70g F', Fri: '2,450 kcal · 165g P · 280g C · 75g F', Sat: '2,370 kcal · 165g P · 270g C · 70g F', Sun: '2,750 kcal · 165g P · 375g C · 65g F' };
+
+// Meal timing, from NEWPLAN.md's four templates. Written out per day rather than scaled by
+// code: the only thing that varies between days on the same template is two carb numbers,
+// and the arithmetic is already done in NEWPLAN. Each day's macros must sum to its FUEL
+// target; asserted below, so a bad edit fails `npm run gen-plan` instead of shipping.
+// A = double day (Tue/Thu/Sat) · B = lift only (Mon/Fri) · C = long run (Sun) · D = quality (Wed)
+const MEALS = {
+  Mon: ['7:30 Breakfast · 40P 70C 20F', '12:00 Lunch · 40P 65C 20F', '1:45 Pre-lift · 45C', '3:45 Post-lift, biggest meal · 45P 80C 15F', '7:00 Dinner · 40P 50C 20F'],
+  Fri: ['7:30 Breakfast · 40P 50C 20F', '12:00 Lunch · 40P 65C 20F', '1:45 Pre-lift · 45C', '3:45 Post-lift, biggest meal · 45P 80C 15F', '7:00 Dinner · 40P 40C 20F'],
+  Tue: ['6:45 Pre-run · 0-15C', '8:00 Breakfast, post-run · 40P 75C 15F', '12:00 Lunch · 35P 65C 20F', '1:45 Pre-lift · 45C', '3:45 Post-lift, biggest meal · 45P 80C 15F', '7:00 Dinner · 30P 50C 18F', '10:00 Pre-bed · 15P 2F'],
+  Thu: ['6:45 Pre-run · 0-15C', '8:00 Breakfast, post-run · 40P 65C 15F', '12:00 Lunch · 35P 65C 20F', '1:45 Pre-lift · 45C', '3:45 Post-lift, biggest meal · 45P 75C 15F', '7:00 Dinner · 30P 50C 18F', '10:00 Pre-bed · 15P 2F'],
+  Sat: ['6:45 Pre-run · 0-15C', '8:00 Breakfast, post-run · 40P 55C 15F', '12:00 Lunch · 35P 65C 20F', '1:45 Pre-lift · 45C', '3:45 Post-lift, biggest meal · 45P 55C 15F', '7:00 Dinner · 30P 50C 18F', '10:00 Pre-bed · 15P 2F'],
+  Wed: ['Wake 6:15. Being under-fueled shows up in this session itself.', '6:15 Pre-run · 30C', '8:00 Breakfast, post-run · 45P 90C 15F', '12:00 Lunch · 40P 75C 20F', '3:30 Snack · 20P 55C 10F', '7:00 Dinner · 40P 85C 18F', '10:00 Pre-bed · 20P 15C 2F'],
+  Sun: ['Wake 6:15. You need 30 min to get food in before this one.', '6:15 Pre-run · 40C', '6:50-8:00 During run · 25C', '8:15 Breakfast, biggest meal · 45P 100C 15F', '12:00 Lunch · 40P 75C 20F', '3:30 Snack · 20P 50C 10F', '7:00 Dinner · 40P 80C 18F', '10:00 Pre-bed · 20P 5C 2F'],
+};
+
+// Meal macros must add up to the day's target. "0-15C" on the optional pre-run counts as 0.
+for (const [day, meals] of Object.entries(MEALS)) {
+  for (const macro of ['P', 'C', 'F']) {
+    const got = meals.reduce((n, m) => n + Number(m.match(new RegExp(`(?<![-\\d])(\\d+)${macro}\\b`))?.[1] ?? 0), 0);
+    const want = Number(FUEL[day].match(new RegExp(`(\\d+)g ${macro}`))[1]);
+    if (got !== want) throw new Error(`${day}: meals total ${got}g ${macro}, FUEL says ${want}g`);
+  }
+}
 
 // Phase 1 mileage: 22 mi/week FLAT (NEWPLAN rule 3 — "Do not creep"). Every 4th week
 // cuts back to ~17. The cutback day-by-day split is ours; NEWPLAN gives only the total.
@@ -86,7 +110,7 @@ for (let week = 1; week <= WEEKS; week++) {
     }
 
     // Daily fuel target.
-    add('fuel', `🥗 ${split1(FUEL[day], ' · ')}`);
+    add('fuel', `🥗 ${split1(FUEL[day], ' · ')}\n${MEALS[day].join('\n')}`);
 
     if (WEIGH_DAYS.includes(day)) add('weigh', WEIGH);
 

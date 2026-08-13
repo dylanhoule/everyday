@@ -198,15 +198,17 @@ That's 2,780 at 22 mi/week and 2,820 at 25. It's built from your actual resting 
 
 | Day | Training | Kcal | Protein | Carbs | Fat |
 |---|---|---|---|---|---|
-| **Mon** | Pull A | 2,400 | 165 g | 265 g | 75 g |
+| **Mon** | Pull A | 2,575 | 165 g | 310 g | 75 g |
 | **Tue** | Easy run + Push A | 2,550 | 165 g | 315 g | 70 g |
 | **Wed** | Quality run | 2,650 | 165 g | 350 g | 65 g |
 | **Thu** | Easy run + legs | 2,500 | 165 g | 300 g | 70 g |
 | **Fri** | Pull B | 2,450 | 165 g | 280 g | 75 g |
-| **Sat** | Easy run + Push B | 2,550 | 165 g | 315 g | 70 g |
+| **Sat** | Easy run + Push B | 2,370 | 165 g | 270 g | 70 g |
 | **Sun** | Long run | 2,750 | 165 g | 375 g | 65 g |
 
 ~230/day below maintenance. The deficit block ends 2026-10-26, or the day the scale reads 155 lb, whichever comes first.
+
+Carbs sit high on Monday and low on Saturday: Monday follows the long run and holds your heaviest pulling session, Saturday is isolation work and an easy 3. Weekly total is unchanged.
 
 **Why the low days are lift days, not rest days:** lifting is far less glycogen-dependent than running, and Mon/Fri have no running at all. The fat-loss benefit of carb cycling is zero once calories and protein match — what it buys is performance timing.
 
@@ -220,6 +222,69 @@ That's 2,780 at 22 mi/week and 2,820 at 25. It's built from your actual resting 
 - Cold hands, drop in libido, persistent low mood
 
 Two or more and you're underfueling. The fix is food, not more discipline. This is the most common failure mode for people who run and lift at the same time, and it does not announce itself as hunger.
+
+## Meal timing (Phase 1)
+
+Four templates cover the week. Protein is 165 g every day in all of them; the carb number is
+what moves. These are the numbers seeded into the app's daily 🥗 task.
+
+### Template A — Double day (Tue, Thu, Sat)
+
+Morning run, afternoon lift.
+
+| Time | Meal | P | C | F |
+|---|---|---|---|---|
+| 6:45 | Pre-run | — | 0-15 | — |
+| 8:00 | Breakfast (post-run) | 40 | 75 | 15 |
+| 12:00 | Lunch | 35 | 65 | 20 |
+| 1:45 | Pre-lift | — | 45 | — |
+| 3:45 | Post-lift (biggest meal) | 45 | 80 | 15 |
+| 7:00 | Dinner | 30 | 50 | 18 |
+| 10:00 | Pre-bed | 15 | — | 2 |
+
+Shown at Tuesday's 315 g. Thursday (300 g) takes it off breakfast (65) and post-lift (75);
+Saturday (270 g) off breakfast (55) and post-lift (55).
+
+### Template B — Lift only (Mon, Fri)
+
+No morning run. Sleep the full 6:30 and eat breakfast later.
+
+| Time | Meal | P | C | F |
+|---|---|---|---|---|
+| 7:30 | Breakfast | 40 | 70 | 20 |
+| 12:00 | Lunch | 40 | 65 | 20 |
+| 1:45 | Pre-lift | — | 45 | — |
+| 3:45 | Post-lift (biggest meal) | 45 | 80 | 15 |
+| 7:00 | Dinner | 40 | 50 | 20 |
+
+Shown at Monday's 310 g. Friday (280 g) takes it off breakfast (50) and dinner (40).
+
+### Template C — Long run (Sun)
+
+Wake 6:15, not 6:30. You need 30 minutes to get food in before this one.
+
+| Time | Meal | P | C | F |
+|---|---|---|---|---|
+| 6:15 | Pre-run | — | 40 | — |
+| 6:50-8:00 | During run | — | 25 | — |
+| 8:15 | Breakfast (biggest meal) | 45 | 100 | 15 |
+| 12:00 | Lunch | 40 | 75 | 20 |
+| 3:30 | Snack | 20 | 50 | 10 |
+| 7:00 | Dinner | 40 | 80 | 18 |
+| 10:00 | Pre-bed | 20 | 5 | 2 |
+
+### Template D — Quality run (Wed)
+
+Wake 6:15. The only run of the week where being under-fueled shows up in the session itself.
+
+| Time | Meal | P | C | F |
+|---|---|---|---|---|
+| 6:15 | Pre-run | — | 30 | — |
+| 8:00 | Breakfast (post-run) | 45 | 90 | 15 |
+| 12:00 | Lunch | 40 | 75 | 20 |
+| 3:30 | Snack | 20 | 55 | 10 |
+| 7:00 | Dinner | 40 | 85 | 18 |
+| 10:00 | Pre-bed | 20 | 15 | 2 |
 
 ## Phase 2 — Lean gain (Nov onward)
 
