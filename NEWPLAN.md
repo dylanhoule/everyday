@@ -3,7 +3,7 @@
 **Stats:** 165 lb · 5'8" · 18 years old · ~15-17% body fat
 **Primary goal:** Lean, climber-style upper body — lats, traps, delts, forearms, low body fat
 **Secondary goal:** 50K ultramarathon, no date set
-**Current running:** ~20 mi/week, ~9:00 easy pace
+**Current running:** 15 mi/week, ~9:00 easy pace. Run-commute to the gym (revised Aug 2026, after moving into college).
 
 ---
 
@@ -11,22 +11,32 @@
 
 These two goals compete, so this plan runs them **in sequence, not in parallel.**
 
-Running fitness is a fast, repeatable adaptation. From a 22 mi/week base you can build to a 50K in 20 weeks, and you can do that in any year of your life. Lat width, trap thickness and forearm development take 18-36 months, and every week spent above ~35 mi/week runs that development at roughly half speed. You are 18. This is the best muscle-building window you will ever have, and it is the one that doesn't come back.
+Running fitness is a fast, repeatable adaptation. From a modest base you can build to a 50K in five or six months, and you can do that in any year of your life. Lat width, trap thickness and forearm development take 18-36 months, and every week spent above ~35 mi/week runs that development at roughly half speed. You are 18. This is the best muscle-building window you will ever have, and it is the one that doesn't come back.
 
-So the 28-week 50K plan goes on the shelf. Running stays **flat at 22-25 mi/week, permanently.** That is not a holding pattern — it's a good place to live:
+So the 28-week 50K plan goes on the shelf. Running stays **flat and low, permanently.** That is not a holding pattern, it's a good place to live:
 
-- Maintains real aerobic fitness with one threshold session a week, so you keep getting faster
-- At that volume, interference with **upper body** hypertrophy is minimal (running competes with legs, not lats — and your goal is almost entirely upper body)
+- At this volume, interference with **upper body** hypertrophy is minimal (running competes with legs, not lats — and your goal is almost entirely upper body)
 - Leaves a base you can start a 20-week ultra build from on four weeks' notice
 - Frees a fourth weekly lifting session, which matters more for the physique than anything else in this document
+
+### The college revision (Aug 2026)
+
+Five separate run sessions a week stopped being manageable after move-in, so Phase 1 drops to **15 mi/week and the running becomes the commute.** The gym is a mile away: five mornings a week are 1 mi there, lift, 1 mi back. Sunday is the only run you go out *for*.
+
+This is a real cut, not a repackaging. Two things go with it:
+
+- **There is no hard session anymore.** Every mile in the week is easy, which is exactly the gray-zone trap that rule 1 below names. Expect to give up some top-end over these nine weeks. That is the price of a plan you will actually execute during move-in, and it is the correct trade.
+- **Phase 2's 25 mi/week is now an open question,** not a plan. Rebuild the running block in November off what the commute structure actually sustained.
+
+The cheapest way to buy most of the speed back is `6 x 20s strides` tacked onto one run home. Two minutes. It is one string in the generator whenever you want it.
 
 ### Three phases
 
 | Phase | When | Running | Calories | Goal |
 |---|---|---|---|---|
-| **1 — Cut** | Now → Oct 26, 2026 or 155 lb (11 wks) | 22 mi/wk flat | 2,550 avg | 165 → 158 lb, ~12% BF |
-| **2 — Lean gain** | Nov 2026 → 12-18 months | 25 mi/wk flat | 3,150 | Build the width |
-| **3 — 50K build** | When you pick a date | 25 → 48 mi/wk | Maintenance only | Race |
+| **1 — Cut** | Now → Oct 26, 2026 or 155 lb (11 wks) | 15 mi/wk flat | 2,455 avg | 165 → 158 lb, ~12% BF |
+| **2 — Lean gain** | Nov 2026 → 12-18 months | TBD, rebuild off Phase 1 | recompute | Build the width |
+| **3 — 50K build** | When you pick a date | ramp to 48 mi/wk | Maintenance only | Race |
 
 **Rule zero: never cut and ramp mileage at the same time.** Phase 1 works because mileage is flat. Phase 3 works because calories are flat. Overlapping them is how 18-year-old runners get stress fractures.
 
@@ -34,17 +44,19 @@ So the 28-week 50K plan goes on the shelf. Running stays **flat at 22-25 mi/week
 
 ## Weekly Structure
 
-| Day | Running | Lifting |
+| Day | Morning | Lifting |
 |---|---|---|
-| **Mon** | Off | **Pull A** — heavy, thickness |
-| **Tue** | Easy 4 mi + strides | **Push A** — heavy (PM) |
-| **Wed** | Quality: tempo / intervals | — |
-| **Thu** | Easy 4 mi | **Legs + grip** — 25 min (PM) |
-| **Fri** | Off | **Pull B** — width, volume |
-| **Sat** | Easy 4 mi | **Push B** — delts, arms, forearms (PM) |
-| **Sun** | Long run 7-9 mi | — |
+| **Mon** | Commute 2 mi | **Pull A**, heavy, thickness |
+| **Tue** | Commute 2 mi | **Push A**, heavy |
+| **Wed** | Rest | Rest |
+| **Thu** | Commute 2 mi | **Legs + grip**, 25 min |
+| **Fri** | Commute 2 mi | **Pull B**, width, volume |
+| **Sat** | Commute 2 mi | **Push B**, delts, arms, forearms |
+| **Sun** | Long run 5 mi | Rest |
 
-**Why it's built this way.** Monday and Friday are run-free, so they hold the two heaviest lifts. Wednesday's quality run sits two days after heavy pull and follows only an easy run. Leg work lands Thursday, three clear days before Sunday's long run and one day after the quality session, not before it — this is the fix for the single worst scheduling conflict in the original plans. Upper body lifting on run days is fine; separate them by 6+ hours where you can.
+**The morning.** Out the door 6:45, run the mile, lift 7:15 to 8:15, run the mile home, in by 8:30. Breakfast at 8:45 is the post-workout meal and the biggest one of the day.
+
+**Why it's built this way.** Run days and lift days are now the same days by construction, because the run *is* how you get to the gym. The run out is your warm-up and the run back is your cooldown, which is the one genuinely good thing about this structure. Wednesday is the only day with no lift, and therefore the only day with no reason to leave, so it is a full rest day. Leg work stays on Thursday, three clear days before Sunday's long run. The old rule about separating lifting and running by 6+ hours is dead here: at one mile it doesn't matter.
 
 **Pull frequency is 2x/week and push is 2x/week.** That is the change that builds the physique. Three full-body-ish sessions a week was always the compromise forced by 40+ mi/week.
 
@@ -55,9 +67,9 @@ So the 28-week 50K plan goes on the shelf. Running stays **flat at 22-25 mi/week
 ## The rules
 
 1. **Almost everything is easy.** Conversational, full sentences, nose-breathing. Jogging everything in one gray zone is exactly why 9:00 is your only gear.
-2. **One hard session per week.** Wednesday. That's where speed comes from.
-3. **Volume stays flat.** 22 mi/week in Phase 1, 25 in Phase 2. Do not creep. If you feel great, run the same mileage faster on Wednesday, not more miles.
-4. **Every 4th week is a cutback:** drop to ~17 mi and make Wednesday easy + strides.
+2. **No hard session, for now.** Phase 1 has zero quality work. See the college revision above: this is maintenance-minus and you should expect it to read that way. The rotation is parked further down, not deleted.
+3. **Volume stays flat.** 15 mi/week in Phase 1. Do not creep. The commute miles are fixed by the distance to the gym, which is exactly why this version is easy to hold.
+4. **Every 4th week is a cutback:** the long run drops to 3 mi, so the week reads 13. The commute miles cannot cut, you still have to get to the gym.
 5. **Long run cap:** never more than ~10% above your longest run of the past 30 days.
 
 ## Pace zones
@@ -82,17 +94,22 @@ So the 28-week 50K plan goes on the shelf. Running stays **flat at 22-25 mi/week
 
 ## Weekly running detail
 
-| Day | Session | Phase 1 (22 mi) | Phase 2 (25 mi) |
+| Day | Session | Normal week | Cutback week |
 |---|---|---|---|
-| Tue | Easy + strides | 4 mi + 6 x 20s strides | 4 mi + 6 x 20s strides |
-| Wed | **Quality** | 4 mi total | 5 mi total |
-| Thu | Easy | 4 mi | 5 mi |
-| Sat | Easy | 3 mi | 4 mi |
-| Sun | **Long run** | 7 mi | 7-9 mi |
+| Mon | Gym commute | 2 mi | 2 mi |
+| Tue | Gym commute | 2 mi | 2 mi |
+| Wed | Rest | 0 | 0 |
+| Thu | Gym commute | 2 mi | 2 mi |
+| Fri | Gym commute | 2 mi | 2 mi |
+| Sat | Gym commute | 2 mi | 2 mi |
+| Sun | **Long run** | 5 mi | 3 mi |
+| | **Total** | **15 mi** | **13 mi** |
 
-## Quality session rotation (Wednesday)
+## Quality session rotation, PARKED
 
-Repeat this 4-week cycle indefinitely. Week 4 is the cutback.
+**Not running in Phase 1.** There is no quality day in the commute structure, so nothing below
+is seeded into the app right now. It is kept here so the progression isn't lost when you
+rebuild the running block in November.
 
 | Week | Session | Detail |
 |---|---|---|
@@ -188,31 +205,31 @@ Forget calorie tables that scale by activity level. Yours is:
 
 > **Maintenance ≈ 2,470 + (14 × weekly miles)**
 
-That's 2,780 at 22 mi/week and 2,820 at 25. It's built from your actual resting rate (~1,740 by both Mifflin-St Jeor and Katch-McArdle), the thermic effect of food, four lifting sessions, and ~95 kcal per mile run. It replaces both tables in the original plans, one of which added calories at double its own stated rate and would have had you 350/day over maintenance at peak mileage.
+That's **2,680 at 15 mi/week** (it was 2,780 at 22). It's built from your actual resting rate (~1,740 by both Mifflin-St Jeor and Katch-McArdle), the thermic effect of food, five lifting sessions, and ~95 kcal per mile run. It replaces both tables in the original plans, one of which added calories at double its own stated rate and would have had you 350/day over maintenance at peak mileage.
 
 **Every calorie number below is a starting hypothesis.** Three weeks of scale data overrides it.
 
 ## Phase 1 — Cut (now → Oct 26)
 
-**Weekly average 2,550. Protein 165 g every day, no exceptions. Fat floor 60 g.**
+**Weekly average 2,455. Protein 165 g every day, no exceptions. Fat floor 65 g.**
 
 | Day | Training | Kcal | Protein | Carbs | Fat |
 |---|---|---|---|---|---|
-| **Mon** | Pull A | 2,575 | 165 g | 310 g | 75 g |
-| **Tue** | Easy run + Push A | 2,550 | 165 g | 315 g | 70 g |
-| **Wed** | Quality run | 2,650 | 165 g | 350 g | 65 g |
-| **Thu** | Easy run + legs | 2,500 | 165 g | 300 g | 70 g |
-| **Fri** | Pull B | 2,450 | 165 g | 280 g | 75 g |
-| **Sat** | Easy run + Push B | 2,370 | 165 g | 270 g | 70 g |
-| **Sun** | Long run | 2,750 | 165 g | 375 g | 65 g |
+| **Mon** | Commute 2 mi + Pull A | 2,510 | 165 g | 305 g | 70 g |
+| **Tue** | Commute 2 mi + Push A | 2,470 | 165 g | 295 g | 70 g |
+| **Wed** | Rest | 2,325 | 165 g | 270 g | 65 g |
+| **Thu** | Commute 2 mi + legs | 2,450 | 165 g | 290 g | 70 g |
+| **Fri** | Commute 2 mi + Pull B | 2,435 | 165 g | 275 g | 75 g |
+| **Sat** | Commute 2 mi + Push B | 2,390 | 165 g | 275 g | 70 g |
+| **Sun** | Long run 5 mi | 2,605 | 165 g | 340 g | 65 g |
 
-~230/day below maintenance. The deficit block ends 2026-10-26, or the day the scale reads 155 lb, whichever comes first.
+~225/day below maintenance, which is the *same* deficit as the 22 mi/week version. Every number came down 100/day only because maintenance did. The deficit block ends 2026-10-26, or the day the scale reads 155 lb, whichever comes first.
 
-Carbs sit high on Monday and low on Saturday: Monday follows the long run and holds your heaviest pulling session, Saturday is isolation work and an easy 3. Weekly total is unchanged.
+**Wednesday is now the lowest day, not the highest.** It used to hold the quality run. It is now a full rest day: no run, no lift, nothing to fuel. Sunday stays highest because it holds the only real run of the week.
 
-**Why the low days are lift days, not rest days:** lifting is far less glycogen-dependent than running, and Mon/Fri have no running at all. The fat-loss benefit of carb cycling is zero once calories and protein match — what it buys is performance timing.
+The rest of the spread tracks training stress. Heavy pulling and pressing on Mon and Tue sit above the isolation work on Fri and Sat. The fat-loss benefit of carb cycling is zero once calories and protein match, what it buys is performance timing.
 
-**Don't go deeper than this.** At 2,450 with this training load your energy availability sits at ~32 kcal/kg of lean mass. Below 30 is where bone density, hormones and recovery start failing, and at 18 with rising bone load that's not a slow-progress problem, it's a stress fracture problem. There is no version of this where eating less gets you there faster.
+**Don't go deeper than this.** Worst day is Saturday: 2,390 kcal, minus ~190 for the 2 mi and ~200 for the lift, leaves ~2,000, or **~32 kcal/kg of lean mass.** Below 30 is where bone density, hormones and recovery start failing, and at 18 with rising bone load that's not a slow-progress problem, it's a stress fracture problem. Dropping 7 miles a week is what bought the headroom to eat 100 less and still sit in the same place. There is no version of this where eating less gets you there faster.
 
 ### Exit the cut early if any of these
 
@@ -225,70 +242,71 @@ Two or more and you're underfueling. The fix is food, not more discipline. This 
 
 ## Meal timing (Phase 1)
 
-Four templates cover the week. Protein is 165 g every day in all of them; the carb number is
-what moves. These are the numbers seeded into the app's daily 🥗 task.
+Three templates cover the week, down from four: Mon/Fri no longer differ structurally from
+Tue/Thu/Sat now that all five are run, lift, run mornings. Protein is 165 g every day in all
+of them, the carb number is what moves. These are the numbers seeded into the app's daily
+🥗 task.
 
-### Template A — Double day (Tue, Thu, Sat)
+### Template A, gym morning (Mon, Tue, Thu, Fri, Sat)
 
-Morning run, afternoon lift.
+Leave 6:45, run the mile, lift 7:15 to 8:15, run home, in by 8:30. Breakfast is now the
+post-workout meal *and* the biggest one of the day, which is the single largest change from
+the afternoon-lift version.
 
 | Time | Meal | P | C | F |
 |---|---|---|---|---|
-| 6:45 | Pre-run | — | 0-15 | — |
-| 8:00 | Breakfast (post-run) | 40 | 75 | 15 |
-| 12:00 | Lunch | 35 | 65 | 20 |
-| 1:45 | Pre-lift | — | 45 | — |
-| 3:45 | Post-lift (biggest meal) | 45 | 80 | 15 |
-| 7:00 | Dinner | 30 | 50 | 18 |
+| 6:45 | Pre-run (optional, you're running a mile) | — | 0-15 | — |
+| 8:45 | Breakfast, post-lift, biggest meal | 50 | 100 | 20 |
+| 12:30 | Lunch | 40 | 75 | 20 |
+| 3:30 | Snack | 20 | 60 | 10 |
+| 7:00 | Dinner | 40 | 70 | 18 |
 | 10:00 | Pre-bed | 15 | — | 2 |
 
-Shown at Tuesday's 315 g. Thursday (300 g) takes it off breakfast (65) and post-lift (75);
-Saturday (270 g) off breakfast (55) and post-lift (55).
+Shown at Monday's 305 g. The other four take carbs off the same four meals:
 
-### Template B — Lift only (Mon, Fri)
+| Day | Total C | Breakfast | Lunch | Snack | Dinner |
+|---|---|---|---|---|---|
+| Mon | 305 | 100 | 75 | 60 | 70 |
+| Tue | 295 | 95 | 75 | 55 | 70 |
+| Thu | 290 | 95 | 70 | 55 | 70 |
+| Fri | 275 | 90 | 70 | 50 | 65 |
+| Sat | 275 | 90 | 70 | 50 | 65 |
 
-No morning run. Sleep the full 6:30 and eat breakfast later.
+Friday carries 75 g fat instead of 70, taken on breakfast (25 g).
 
-| Time | Meal | P | C | F |
-|---|---|---|---|---|
-| 7:30 | Breakfast | 40 | 70 | 20 |
-| 12:00 | Lunch | 40 | 65 | 20 |
-| 1:45 | Pre-lift | — | 45 | — |
-| 3:45 | Post-lift (biggest meal) | 45 | 80 | 15 |
-| 7:00 | Dinner | 40 | 50 | 20 |
+### Template B, rest day (Wed)
 
-Shown at Monday's 310 g. Friday (280 g) takes it off breakfast (50) and dinner (40).
-
-### Template C — Long run (Sun)
-
-Wake 6:15, not 6:30. You need 30 minutes to get food in before this one.
+No morning session. Sleep in, eat breakfast late, and dinner becomes the biggest meal because
+there's no workout to put one after.
 
 | Time | Meal | P | C | F |
 |---|---|---|---|---|
-| 6:15 | Pre-run | — | 40 | — |
-| 6:50-8:00 | During run | — | 25 | — |
-| 8:15 | Breakfast (biggest meal) | 45 | 100 | 15 |
-| 12:00 | Lunch | 40 | 75 | 20 |
+| 8:00 | Breakfast | 40 | 60 | 18 |
+| 12:30 | Lunch | 40 | 70 | 20 |
 | 3:30 | Snack | 20 | 50 | 10 |
-| 7:00 | Dinner | 40 | 80 | 18 |
+| 7:00 | Dinner, biggest meal | 45 | 85 | 15 |
 | 10:00 | Pre-bed | 20 | 5 | 2 |
 
-### Template D — Quality run (Wed)
+### Template C, long run (Sun)
 
-Wake 6:15. The only run of the week where being under-fueled shows up in the session itself.
+Wake ~6:50. The run is ~45 min, so this is a gentler morning than the old 7-9 mile version.
 
 | Time | Meal | P | C | F |
 |---|---|---|---|---|
-| 6:15 | Pre-run | — | 30 | — |
-| 8:00 | Breakfast (post-run) | 45 | 90 | 15 |
-| 12:00 | Lunch | 40 | 75 | 20 |
-| 3:30 | Snack | 20 | 55 | 10 |
-| 7:00 | Dinner | 40 | 85 | 18 |
-| 10:00 | Pre-bed | 20 | 15 | 2 |
+| 7:00 | Pre-run | — | 40 | — |
+| 7:30-8:15 | During run (gut training, not need) | — | 20 | — |
+| 8:30 | Breakfast, biggest meal | 45 | 95 | 15 |
+| 12:30 | Lunch | 40 | 70 | 20 |
+| 3:30 | Snack | 20 | 50 | 10 |
+| 7:00 | Dinner | 40 | 60 | 18 |
+| 10:00 | Pre-bed | 20 | 5 | 2 |
 
 ## Phase 2 — Lean gain (Nov onward)
 
-Running goes to 25 mi/week, so maintenance is ~2,820. **Eat 3,150.**
+**These numbers assume 25 mi/week and are now stale.** Phase 1 runs at 15, and the commute
+structure may well carry into Phase 2. If it does, maintenance is ~2,680 and the surplus lands
+closer to **3,030**, not 3,150. Recompute in November off three weeks of real scale data and
+rebuild this table then. The daily split below is kept as a shape to copy, not as targets.
 
 | Day | Training | Kcal | Protein | Carbs | Fat |
 |---|---|---|---|---|---|
@@ -328,7 +346,7 @@ One feeding within an hour of every lift and every long run.
 
 ## Long run fueling
 
-At 7-9 mile long runs you don't strictly need in-run fuel. **Practice it anyway.** Gut carb absorption is trainable and takes 8-12 weeks to develop. GI failure ends more ultras than legs do, and runners who first test 80 g/hr during race week discover their stomach can't handle it with no time left to fix it.
+At a 5 mile long run you're under 75 minutes, so by the table below it's water only. **Practice fueling anyway.** Gut carb absorption is trainable and takes 8-12 weeks to develop. GI failure ends more ultras than legs do, and runners who first test 80 g/hr during race week discover their stomach can't handle it with no time left to fix it. The 20 g in Sunday's template is gut training, not a need.
 
 | Duration | Fueling |
 |---|---|
@@ -380,13 +398,13 @@ Three weeks of data beats any calculator, including this one. Your actual expend
 
 # RULES THAT MATTER MORE THAN EXERCISE SELECTION
 
-**If Wednesday's quality run degrades two weeks running, cut Thursday's leg session** — not the run. Legs aren't growing at this mileage anyway.
+**If the commute run starts getting skipped, the problem is the wake-up time, not the mileage.** Move the alarm or move the gym session, but don't "fix" it by cutting the run and driving. That run is the only running you do on five days out of seven.
 
-**Never lift legs the day before the long run. Never lift heavy the day after it.**
+**Never lift legs the day before the long run.** Thursday legs to Sunday long run is three clear days, which is the point. Monday's Pull A does land the day after the long run, and that's fine: it's a pull session, not legs, and 5 easy miles isn't the kind of long run that rule was written for.
 
-**Tuesday and Saturday easy runs are recovery disguised as training.** Keep them conversational. People habitually run these too hard, which turns a polarized week into a gray-zone week and stalls everything.
+**The commute runs are transport, not training.** One mile each way, conversational. Running them hard turns your warm-up into a session and makes the lift the thing that suffers, which is backwards: the lift is the priority in this phase.
 
-**Volume creep is the enemy.** Adding "just a couple miles" because you feel good is how 22 mi/week becomes 32 mi/week becomes a plan that no longer builds anything. The mileage cap is a feature.
+**Volume creep is the enemy.** Adding "just a couple miles" because you feel good is how 15 mi/week becomes 25 becomes a plan that no longer builds anything. The mileage cap is a feature, and this version enforces it structurally, because the gym is a fixed distance away.
 
 **No hangboarding for at least six months** if you take up climbing. Finger pulleys adapt on an 18-24 month timeline while muscle adapts in 8-12 weeks. That gap is why so many climbers rupture an A2 pulley in year one. The dead hangs here are sufficient.
 
@@ -396,7 +414,12 @@ Three weeks of data beats any calculator, including this one. Your actual expend
 
 # WHEN YOU PICK A RACE DATE
 
-Take the 28-week 50K plan and slot in at **Week 9**, not Week 1. You'll already be at its Week 9 mileage (26 mi), which turns it into a **20-week build.** Count backward 20 weeks from race day.
+**This changed with the college revision.** At 22-25 mi/week you could slot into the 28-week 50K plan at **Week 9** and turn it into a 20-week build. At 15 mi/week you can't: Week 9 is 26 mi, and that's a 73% jump. Two options, both honest:
+
+- **Add 8 weeks up front** rebuilding 15 to 25 mi/week (about +1.5 mi/week, well inside the 10% rule), then slot in at Week 9 as originally planned. Call it a **28-week commitment** from a standing start.
+- **Slot in at Week 1** and run the full 28 weeks. Simpler, and the early weeks are close to where you already are.
+
+Either way, count backward from race day and don't compress it. Rule zero still applies: never cut while ramping.
 
 Three things to change when you do:
 
@@ -410,7 +433,7 @@ Also watch the combined weekend load in that plan. It goes from 10 miles to 32 m
 
 # REALISTIC EXPECTATIONS
 
-**Phase 1, by early November:** 158 lb at roughly 12% body fat. You will look meaningfully leaner and more defined, abs visible, and this is the fastest visible change you'll get. It is almost entirely a fat-loss result, not a muscle-building one.
+**Phase 1, by early November:** 158 lb at roughly 12% body fat, and somewhat slower over a mile than you are today. You will look meaningfully leaner and more defined, abs visible, and this is the fastest visible change you'll get. It is almost entirely a fat-loss result, not a muscle-building one.
 
 **Phase 2, twelve months in:** somewhere around 170-175 lb at 12-14%, with genuinely wider lats and thicker traps. That's ~12-15 lb of actual muscle, which is a good year at your training age, and slightly slower than it'd be with zero running.
 

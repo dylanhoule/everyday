@@ -9,6 +9,10 @@ import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
+// COLLEGE REVISION (Aug 2026): running is now the commute. The gym is a mile away, so
+// Mon/Tue/Thu/Fri/Sat are 1 mi there, lift, 1 mi back; Wednesday has no lift and is therefore
+// a full rest day. 15 mi/wk instead of 22, and no quality session at all. Calories came down
+// 100/day only because maintenance did (NEWPLAN: 2,470 + 14 × weekly miles).
 const START = '2026-08-10'; // Monday
 const WEEKS = 11; // Phase 1 cut: Aug 10 → Oct 25. Deficit ends Oct 26, or at 155 lb, whichever comes first.
 
@@ -22,22 +26,24 @@ const LIFTS = {
   Sat: ['Push B · delts, arms, forearms', ['Seated DB shoulder press — 3 × 8-10', 'Cable lateral raise — 4 × 12-15', 'Machine or cable chest press — 3 × 10-12', 'Overhead cable tricep extension — 3 × 12-15', 'Wrist curl + reverse wrist curl — 3 × 15 each', 'Hanging leg raise — 3 × max']],
 };
 
-// Phase 1 nutrition table, verbatim from NEWPLAN.md. Weekly average 2,550.
-const FUEL = { Mon: '2,575 kcal · 165g P · 310g C · 75g F', Tue: '2,550 kcal · 165g P · 315g C · 70g F', Wed: '2,650 kcal · 165g P · 350g C · 65g F', Thu: '2,500 kcal · 165g P · 300g C · 70g F', Fri: '2,450 kcal · 165g P · 280g C · 75g F', Sat: '2,370 kcal · 165g P · 270g C · 70g F', Sun: '2,750 kcal · 165g P · 375g C · 65g F' };
+// Phase 1 nutrition table, verbatim from NEWPLAN.md. Weekly average 2,455.
+// Wednesday is now the LOWEST day, not the highest — it used to hold the quality run and is
+// now full rest. Sunday stays highest: it holds the only real run of the week.
+const FUEL = { Mon: '2,510 kcal · 165g P · 305g C · 70g F', Tue: '2,470 kcal · 165g P · 295g C · 70g F', Wed: '2,325 kcal · 165g P · 270g C · 65g F', Thu: '2,450 kcal · 165g P · 290g C · 70g F', Fri: '2,435 kcal · 165g P · 275g C · 75g F', Sat: '2,390 kcal · 165g P · 275g C · 70g F', Sun: '2,605 kcal · 165g P · 340g C · 65g F' };
 
-// Meal timing, from NEWPLAN.md's four templates. Written out per day rather than scaled by
-// code: the only thing that varies between days on the same template is two carb numbers,
+// Meal timing, from NEWPLAN.md's three templates. Written out per day rather than scaled by
+// code: the only thing that varies between days on the same template is four carb numbers,
 // and the arithmetic is already done in NEWPLAN. Each day's macros must sum to its FUEL
 // target; asserted below, so a bad edit fails `npm run gen-plan` instead of shipping.
-// A = double day (Tue/Thu/Sat) · B = lift only (Mon/Fri) · C = long run (Sun) · D = quality (Wed)
+// A = gym morning (Mon/Tue/Thu/Fri/Sat) · B = rest (Wed) · C = long run (Sun)
 const MEALS = {
-  Mon: ['7:30 Breakfast · 40P 70C 20F', '12:00 Lunch · 40P 65C 20F', '1:45 Pre-lift · 45C', '3:45 Post-lift, biggest meal · 45P 80C 15F', '7:00 Dinner · 40P 50C 20F'],
-  Fri: ['7:30 Breakfast · 40P 50C 20F', '12:00 Lunch · 40P 65C 20F', '1:45 Pre-lift · 45C', '3:45 Post-lift, biggest meal · 45P 80C 15F', '7:00 Dinner · 40P 40C 20F'],
-  Tue: ['6:45 Pre-run · 0-15C', '8:00 Breakfast, post-run · 40P 75C 15F', '12:00 Lunch · 35P 65C 20F', '1:45 Pre-lift · 45C', '3:45 Post-lift, biggest meal · 45P 80C 15F', '7:00 Dinner · 30P 50C 18F', '10:00 Pre-bed · 15P 2F'],
-  Thu: ['6:45 Pre-run · 0-15C', '8:00 Breakfast, post-run · 40P 65C 15F', '12:00 Lunch · 35P 65C 20F', '1:45 Pre-lift · 45C', '3:45 Post-lift, biggest meal · 45P 75C 15F', '7:00 Dinner · 30P 50C 18F', '10:00 Pre-bed · 15P 2F'],
-  Sat: ['6:45 Pre-run · 0-15C', '8:00 Breakfast, post-run · 40P 55C 15F', '12:00 Lunch · 35P 65C 20F', '1:45 Pre-lift · 45C', '3:45 Post-lift, biggest meal · 45P 55C 15F', '7:00 Dinner · 30P 50C 18F', '10:00 Pre-bed · 15P 2F'],
-  Wed: ['Wake 6:15. Being under-fueled shows up in this session itself.', '6:15 Pre-run · 30C', '8:00 Breakfast, post-run · 45P 90C 15F', '12:00 Lunch · 40P 75C 20F', '3:30 Snack · 20P 55C 10F', '7:00 Dinner · 40P 85C 18F', '10:00 Pre-bed · 20P 15C 2F'],
-  Sun: ['Wake 6:15. You need 30 min to get food in before this one.', '6:15 Pre-run · 40C', '6:50-8:00 During run · 25C', '8:15 Breakfast, biggest meal · 45P 100C 15F', '12:00 Lunch · 40P 75C 20F', '3:30 Snack · 20P 50C 10F', '7:00 Dinner · 40P 80C 18F', '10:00 Pre-bed · 20P 5C 2F'],
+  Mon: ['6:45 Pre-run · 0-15C', '8:45 Breakfast, post-lift, biggest meal · 50P 100C 20F', '12:30 Lunch · 40P 75C 20F', '3:30 Snack · 20P 60C 10F', '7:00 Dinner · 40P 70C 18F', '10:00 Pre-bed · 15P 2F'],
+  Tue: ['6:45 Pre-run · 0-15C', '8:45 Breakfast, post-lift, biggest meal · 50P 95C 20F', '12:30 Lunch · 40P 75C 20F', '3:30 Snack · 20P 55C 10F', '7:00 Dinner · 40P 70C 18F', '10:00 Pre-bed · 15P 2F'],
+  Thu: ['6:45 Pre-run · 0-15C', '8:45 Breakfast, post-lift, biggest meal · 50P 95C 20F', '12:30 Lunch · 40P 70C 20F', '3:30 Snack · 20P 55C 10F', '7:00 Dinner · 40P 70C 18F', '10:00 Pre-bed · 15P 2F'],
+  Fri: ['6:45 Pre-run · 0-15C', '8:45 Breakfast, post-lift, biggest meal · 50P 90C 25F', '12:30 Lunch · 40P 70C 20F', '3:30 Snack · 20P 50C 10F', '7:00 Dinner · 40P 65C 18F', '10:00 Pre-bed · 15P 2F'],
+  Sat: ['6:45 Pre-run · 0-15C', '8:45 Breakfast, post-lift, biggest meal · 50P 90C 20F', '12:30 Lunch · 40P 70C 20F', '3:30 Snack · 20P 50C 10F', '7:00 Dinner · 40P 65C 18F', '10:00 Pre-bed · 15P 2F'],
+  Wed: ['Rest day. No morning session, so sleep in and eat breakfast late.', '8:00 Breakfast · 40P 60C 18F', '12:30 Lunch · 40P 70C 20F', '3:30 Snack · 20P 50C 10F', '7:00 Dinner, biggest meal · 45P 85C 15F', '10:00 Pre-bed · 20P 5C 2F'],
+  Sun: ['Wake ~6:50. The only run you go out for.', '7:00 Pre-run · 40C', '7:30-8:15 During run · 20C (gut training, not need)', '8:30 Breakfast, biggest meal · 45P 95C 15F', '12:30 Lunch · 40P 70C 20F', '3:30 Snack · 20P 50C 10F', '7:00 Dinner · 40P 60C 18F', '10:00 Pre-bed · 20P 5C 2F'],
 };
 
 // Meal macros must add up to the day's target. "0-15C" on the optional pre-run counts as 0.
@@ -49,24 +55,17 @@ for (const [day, meals] of Object.entries(MEALS)) {
   }
 }
 
-// Phase 1 mileage: 22 mi/week FLAT (NEWPLAN rule 3 — "Do not creep"). Every 4th week
-// cuts back to ~17. The cutback day-by-day split is ours; NEWPLAN gives only the total.
+// Phase 1 mileage: 15 mi/week FLAT (NEWPLAN rule 3 — "Do not creep"). Mon/Tue/Thu/Fri/Sat
+// are the gym commute — 1 mi there, 1 mi back — so they're pinned at 2 by the distance to the
+// gym. That makes the long run the only cutback lever; you still have to get to the gym.
 const MILES = {
-  normal: { Tue: 4, Wed: 4, Thu: 4, Sat: 3, Sun: 7 }, //  = 22
-  cutback: { Tue: 3, Wed: 3, Thu: 3, Sat: 3, Sun: 5 }, // = 17
+  normal: { Mon: 2, Tue: 2, Thu: 2, Fri: 2, Sat: 2, Sun: 5 }, //  = 15
+  cutback: { Mon: 2, Tue: 2, Thu: 2, Fri: 2, Sat: 2, Sun: 3 }, // = 13
 };
 
-// Wednesday quality rotation: weeks 1-3 of each 4-week cycle, week 4 is the cutback.
-// Only the interval session progresses ("add volume to the interval, not intensity:
-// 5 x 3 min → 6 x 3 min → 3 x 6 min"); tempo and hills are prescribed once in NEWPLAN
-// and stay put. Three cycles covers all 12 weeks.
-const TEMPO = 'Tempo — WU 10 min. 20 min continuous @ threshold. CD 10 min.';
-const HILLS = 'Hill sprints — WU. 8 x 15s steep hill near-max, walk fully down. + 4 strides. CD.';
-const QUALITY = [
-  ['Cruise intervals — WU 10 min. 5 x 3 min @ threshold w/ 90s jog. CD 10 min.', TEMPO, HILLS],
-  ['Cruise intervals — WU 10 min. 6 x 3 min @ threshold w/ 90s jog. CD 10 min.', TEMPO, HILLS],
-  ['Cruise intervals — WU 10 min. 3 x 6 min @ threshold w/ 2 min jog. CD 10 min.', TEMPO, HILLS],
-];
+// No quality rotation in Phase 1: Wednesday is the only day without a lift, so it's a full
+// rest day. The rotation is parked in NEWPLAN.md under "Quality session rotation, PARKED"
+// for whoever rebuilds the running block in November.
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const WEIGH_DAYS = ['Mon', 'Wed', 'Fri']; // three mornings a week, same conditions
@@ -82,7 +81,6 @@ const start = new Date(`${START}T12:00:00`);
 for (let week = 1; week <= WEEKS; week++) {
   const cutback = week % 4 === 0;
   const deload = week % 8 === 0; // every other cutback → the "every 6-8 weeks" deload
-  const quality = QUALITY[Math.floor((week - 1) / 4)];
   const miles = MILES[cutback ? 'cutback' : 'normal'];
 
   for (const [i, day] of DAYS.entries()) {
@@ -91,16 +89,12 @@ for (let week = 1; week <= WEEKS; week++) {
     const date = d.toISOString().slice(0, 10);
     const add = (kind, text) => tasks.push({ id: `plan-${date}-${kind}`, text, done: false, date });
 
-    // Running — Mon and Fri are run-free so they can hold the two heaviest lifts.
-    if (day === 'Tue') add('run', `🏃 Easy run — ${miles.Tue} mi\nConversational, nose-breathing.\n+ 6 × 20s strides`);
-    if (day === 'Wed')
-      add('run', cutback
-        ? `🏃 Easy run — ${miles.Wed} mi\nCutback week: nothing hard.\n+ 6 × 20s strides`
-        : `🏃 QUALITY — ${miles.Wed} mi\n${split1(quality[(week - 1) % 4], ' — ')}`);
-    if (day === 'Thu') add('run', `🏃 Easy run — ${miles.Thu} mi\nConversational pace.`);
-    if (day === 'Sat') add('run', `🏃 Easy run — ${miles.Sat} mi\nRecovery disguised as training.\nKeep it conversational.`);
+    // Running — the gym is a mile away, so every lift day is a 2 mi round trip around the
+    // session. Wednesday has no lift, so no run: MILES has no Wed key and this falls through.
+    if (day !== 'Sun' && miles[day])
+      add('run', `🏃 Gym commute · ${miles[day]} mi\n1 mi there, 1 mi back. Transport, not training — conversational both ways.\nThe run out is your warm-up, the run back is the cooldown.`);
     if (day === 'Sun')
-      add('run', `🏃 LONG RUN — ${miles.Sun} mi\nEasy effort, time on feet.\nNever fasted; practice in-run fueling.`);
+      add('run', `🏃 LONG RUN · ${miles.Sun} mi\n${cutback ? 'Cutback week: short and easy, nothing to prove.' : 'Easy effort, conversational the whole way.'}\nNever fasted. Practice in-run fueling — 20g carbs, gut training for the 50K.`);
 
     // Lifting — one task per session, one exercise per line.
     if (LIFTS[day]) {
@@ -114,10 +108,10 @@ for (let week = 1; week <= WEEKS; week++) {
 
     if (WEIGH_DAYS.includes(day)) add('weigh', WEIGH);
 
-    // The plan runs out at the end of week 12, so put the reseed reminder at the start of
+    // The plan runs out at the end of week 11, so put the reseed reminder at the start of
     // it — a week of runway rather than a nasty surprise on the last day.
     if (week === WEEKS && day === 'Mon')
-      add('task', '📌 Seed Phase 2 — last week of the cut\nThe cut ends Mon Oct 26, or the day you hit 155 lb, whichever comes first.\nEdit the tables in scripts/gen-plan.mjs, then: npm run gen-plan && npm test.\nSet the new calories off your last 3 weeks of scale data, not the table — NEWPLAN calls every number in it a starting hypothesis.\nRunning goes to 25 mi/wk FLAT. Do not let the long run creep past 7.');
+      add('task', '📌 Seed Phase 2 — last week of the cut\nThe cut ends Mon Oct 26, or the day you hit 155 lb, whichever comes first.\nEdit the tables in scripts/gen-plan.mjs, then: npm run gen-plan && npm test.\nSet the new calories off your last 3 weeks of scale data, not the table — NEWPLAN calls every number in it a starting hypothesis.\nRunning: rebuild off what the commute structure actually sustained, NOT the old 25 mi/wk number — that assumed a plan you no longer run.\nIf you want speed back, the cheapest fix is 6 × 20s strides on a run home. Two minutes.');
   }
 }
 
