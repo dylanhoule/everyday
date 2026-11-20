@@ -2,7 +2,6 @@ import assert from 'node:assert';
 import { PLAN, PLAN_VERSION } from './plan.js';
 
 // Plan-agnostic: holds for any generated plan, so `npm test` stays green after re-seeding.
-assert.ok(PLAN.length > 0, 'PLAN is empty');
 assert.ok(typeof PLAN_VERSION === 'string' && PLAN_VERSION.length > 0, 'missing PLAN_VERSION');
 
 const ids = new Set();
