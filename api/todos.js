@@ -3,22 +3,13 @@
 // Gated by a single shared passphrase (x-sync-key vs SYNC_SECRET) — proportionate
 // for a private todo list, no accounts. Storage is Upstash Redis (one key).
 import { Redis } from '@upstash/redis';
-import crypto from 'node:crypto';
+import { authed } from './_auth.js';
 
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL,
   token: process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN,
 });
 const KEY = 'todos:v1';
-
-function authed(req) {
-  const secret = process.env.SYNC_SECRET || '';
-  const given = String(req.headers['x-sync-key'] || '');
-  if (!secret) return false; // refuse if the server secret isn't configured
-  const a = Buffer.from(given);
-  const b = Buffer.from(secret);
-  return a.length === b.length && crypto.timingSafeEqual(a, b);
-}
 
 export default async function handler(req, res) {
   // If the app is hosted off-Vercel, uncomment CORS and set VITE_SYNC_URL client-side:
