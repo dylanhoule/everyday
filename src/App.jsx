@@ -12,6 +12,7 @@ import GoalDetail from './GoalDetail.jsx';
 import Progress from './Progress.jsx';
 import GoalEditor, { HabitSheet } from './GoalEditor.jsx';
 import TaskSheet from './TaskSheet.jsx';
+import ItemSheet from './ItemSheet.jsx';
 
 const KEY = 'todos'; // the synced record list (name kept from the todo-list days)
 // Dev-only sample data: /?demo under `npm run dev`. Never persisted or synced.
@@ -124,6 +125,7 @@ export default function App() {
       {!wide && <Nav api={api} />}
       {sheet?.kind === 'goal' && <GoalEditor key={sheet.rec.id} goal={sheet.rec} api={api} onClose={api.closeSheet} />}
       {sheet?.kind === 'habit' && <HabitSheet key={sheet.rec.id} habit={sheet.rec} api={api} onClose={api.closeSheet} />}
+      {sheet?.kind === 'item' && <ItemSheet key={`${sheet.item.kind}:${sheet.item.id}`} item={sheet.item} api={api} onClose={api.closeSheet} />}
       {sheet?.kind === 'task' && <TaskSheet key={sheet.rec.id} task={sheet.rec} api={api} onClose={api.closeSheet} />}
     </div>
   );

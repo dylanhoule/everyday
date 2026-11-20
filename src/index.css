@@ -456,3 +456,256 @@ button {
   margin-top: 12px;
   font-size: 13px;
 }
+
+/* Today */
+.muted {
+  color: var(--muted);
+}
+.date-line {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 15px;
+}
+.headline {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 34px;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+}
+.shell.wide .headline {
+  font-size: 54px;
+}
+.quote {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 15px;
+}
+.quote em {
+  font-family: var(--serif);
+  font-size: 19px;
+}
+.today-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.icon-btn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--card-2);
+  color: var(--ink);
+}
+.today-head {
+  margin-bottom: 28px;
+}
+.shell.wide .today-head {
+  margin-bottom: 44px;
+}
+.score {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 18px;
+}
+.vbar {
+  position: relative;
+  width: 8px;
+  height: 44px;
+  border-radius: 4px;
+  background: var(--card-2);
+  overflow: hidden;
+}
+.vbar > span {
+  position: absolute;
+  inset: auto 0 0;
+  background: var(--h4);
+  border-radius: 4px;
+  transition: height 0.3s var(--ease-out);
+}
+.score-num {
+  font-family: var(--serif);
+  font-size: 58px;
+  line-height: 1;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.score-text p {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+}
+.score-text .muted {
+  font-weight: 400;
+  margin-top: 2px;
+}
+
+.today-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 370px;
+  gap: 32px;
+  align-items: start;
+}
+.col-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.col-head h2 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 600;
+  flex: 1;
+}
+.col-head .muted {
+  font-size: 14px;
+}
+.col-head .icon-btn {
+  width: 32px;
+  height: 32px;
+}
+.today-col .score {
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--line);
+}
+
+/* Lists */
+.group {
+  margin-top: 26px;
+}
+.today-col .group {
+  margin-top: 18px;
+}
+.group-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  font-size: 15px;
+  font-weight: 600;
+}
+.group-head .muted {
+  font-weight: 400;
+  font-size: 14px;
+}
+.group-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--line);
+}
+.check {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin-top: 1px;
+  border-radius: 7px;
+  border: 1.5px solid var(--faint);
+  color: transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+.check svg {
+  width: 18px;
+  height: 18px;
+}
+.item.done .check {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
+}
+.item-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-align: left;
+}
+.item-title {
+  font-size: 17px;
+  font-weight: 500;
+}
+.item.done .item-title {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+.item-note {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.4;
+}
+.item-goal {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.item-goal .dot {
+  width: 6px;
+  height: 6px;
+}
+.item-time {
+  flex: none;
+  color: var(--muted);
+  font-size: 14px;
+  padding-top: 2px;
+}
+.earlier .group-head {
+  color: var(--muted);
+}
+.coach {
+  display: flex;
+  gap: 12px;
+  margin-top: 22px;
+  padding: 18px;
+  border-radius: 18px;
+  background: var(--card);
+  color: var(--ink);
+  line-height: 1.45;
+}
+.coach svg {
+  flex: none;
+  color: var(--muted);
+}
+.coach p {
+  margin: 0;
+}
+.empty {
+  padding: 28px;
+  border-radius: var(--radius);
+  background: var(--card);
+}
+.empty-title {
+  margin: 0 0 4px;
+  font-family: var(--serif);
+  font-size: 26px;
+}
+.empty .btn {
+  margin-top: 16px;
+}
+.item-detail p {
+  margin: 0 0 12px;
+  line-height: 1.45;
+}
+.item-detail .field {
+  margin-top: 8px;
+  max-width: 220px;
+}
