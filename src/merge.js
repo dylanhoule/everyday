@@ -17,7 +17,7 @@ export function merge(a, b) {
   return [...byId.values()];
 }
 
-// Retire leftovers from a superseded plan — any seeded task the current PLAN no longer has.
+// Retire leftovers from the deleted training plan: any undone seeded task not in keepIds.
 // Tombstones rather than plain removals so the retirement propagates through merge() to other
 // devices and to the sync store. Done tasks are left alone: they're history of what happened,
 // and user-added tasks have UUID ids, so the `plan-` prefix check never touches them.
