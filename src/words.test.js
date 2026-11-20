@@ -1,0 +1,14 @@
+import assert from 'node:assert';
+import { numberWord, cap, fmtTime, fmtDate, rangeLabel } from './words.js';
+assert.equal(cap(numberWord(4)), 'Four');
+assert.equal(numberWord(9), 'nine');
+assert.equal(numberWord(13), '13');
+assert.equal(fmtTime('17:30'), '5:30p');
+assert.equal(fmtTime('07:00'), '7:00a');
+assert.equal(fmtTime('12:00'), '12:00p');
+assert.equal(fmtTime('00:15'), '12:15a');
+assert.equal(fmtTime(undefined), 'all day');
+assert.equal(fmtDate('2027-01-01'), 'Jan 1');
+assert.equal(rangeLabel('2026-12-14', '2026-12-16'), 'Dec 14 to 16');
+assert.equal(rangeLabel('2026-12-30', '2027-01-02'), 'Dec 30 to Jan 2');
+console.log('words.test.js: all assertions passed');
