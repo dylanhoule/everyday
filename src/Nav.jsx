@@ -23,10 +23,10 @@ export default function Nav({ api }) {
   const item = (view, label) => {
     const on = nav.view === view || (view === 'goals' && nav.view === 'goal');
     return (
-    <button className={`nav-item ${on ? 'on' : ''}`} aria-current={on ? 'page' : undefined} onClick={() => open({ view })}>
-      {Icon[view]}
-      <span>{label}</span>
-    </button>
+      <button className={`nav-item ${on ? 'on' : ''}`} aria-current={on ? 'page' : undefined} onClick={() => open({ view })}>
+        {Icon[view]}
+        <span>{label}</span>
+      </button>
     );
   };
 

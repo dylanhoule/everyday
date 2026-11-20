@@ -5,6 +5,7 @@ import { activeGoals, coachNote } from './goals.js';
 import { cap, fmtDate, fmtTime, numberWord } from './words.js';
 import { Icon } from './Nav.jsx';
 import GoalCard from './GoalCard.jsx';
+import Heatmap from './Heatmap.jsx';
 
 const QUOTE = 'What you do every day matters more than what you do once in a while.';
 const counted = (n, one, many) => `${numberWord(n)} ${n === 1 ? one : many}`;
@@ -223,6 +224,7 @@ export default function Today({ api }) {
           {coach}
         </section>
       </div>
+      <Heatmap api={api} />
     </div>
   );
 }
