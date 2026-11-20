@@ -11,9 +11,9 @@ export default defineConfig({
       manifest: {
         name: 'everyday',
         short_name: 'everyday',
-        description: 'A simple everyday to-do list',
-        theme_color: '#f4ede3',
-        background_color: '#f4ede3',
+        description: 'Your goals, and what you do every day to reach them.',
+        theme_color: '#1b1b1b',
+        background_color: '#1b1b1b',
         display: 'standalone',
         start_url: '/',
         icons: [

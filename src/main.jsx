@@ -6,7 +6,7 @@ import './index.css';
 
 // PWA autoUpdate skipWaiting+clientsClaim so a new SW takes control after a deploy,
 // but the open page keeps the old bundle until reloaded. Reload once when that
-// happens so a freshly pushed plan seeds without the user force-closing the app.
+// happens so a freshly deployed version loads without the user force-closing the app.
 // Guard on an existing controller so the first-ever visit (SW claiming for the
 // first time) doesn't reload.
 if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
