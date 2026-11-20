@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { index, habitDueOn, itemsOn, dayScore, isLocked, toKeep, historyStart, streaks, dayCell, rangeAverage } from './score.js';
+import { index, habitDueOn, itemsOn, dayScore, isLocked, toKeep, historyStart, streaks, dayCell, rangeAverage, earlierItems } from './score.js';
 import { logId } from './records.js';
 import { addDays } from './date.js';
 
@@ -66,5 +66,14 @@ assert.deepStrictEqual(dayCell(index(runB), '2026-11-04', T), { kind: 'rest' });
 // rangeAverage: last n days ending yesterday (today excluded), previous n before that
 assert.deepStrictEqual(rangeAverage(idxA, T, 7), { avg: 86, prev: 86 }); // 11-12..18 and 11-05..11: six 100s and one 0 each
 assert.deepStrictEqual(rangeAverage(index([]), T, 7), { avg: null, prev: null });
+
+// earlierItems: everything still changeable from earlier days, done or not
+const dailyE = { ...run, id: 'e', days: [0, 1, 2, 3, 4, 5, 6] };
+const oldOpen = { id: 'o1', type: 'task', title: 'Old open', date: '2026-11-10', done: false };
+const oldDoneToday = { id: 'o2', type: 'task', title: 'Old, done today', date: '2026-11-10', done: true, doneDate: T };
+const oldDoneLocked = { id: 'o3', type: 'task', title: 'Old, done long ago', date: '2026-11-10', done: true, doneDate: '2026-11-11' };
+const earlier = earlierItems(index([goal, dailyE, oldOpen, oldDoneToday, oldDoneLocked, log('e', '2026-11-18')]), T);
+assert.deepStrictEqual(earlier.map((i) => [i.id, i.date, i.done]),
+  [['o1', '2026-11-10', false], ['o2', '2026-11-10', true], ['e', '2026-11-18', true]]); // finished-today task shows checked so a mis-tap can be undone
 
 console.log('score.test.js: all assertions passed');

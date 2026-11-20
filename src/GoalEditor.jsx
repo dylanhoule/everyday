@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import Sheet, { Field, setOpt, num } from './Sheet.jsx';
 import HabitFields, { habitValid, cleanHabit } from './HabitFields.jsx';
-import { blankHabit } from './records.js';
-import { addDays } from './date.js';
+import { blankHabit, changedOnly, nextPhase } from './records.js';
 
 const COLORS = ['orange', 'blue', 'cyan', 'purple', 'green', 'pink'];
 
@@ -20,7 +19,8 @@ export default function GoalEditor({ goal, api, onClose }) {
   const [g, setG] = useState(goal);
   const [m, setM] = useState({ unit: goal.measure?.unit ?? '', target: goal.measure?.target ?? '', per: goal.measure?.per ?? 'week' });
   const [stat, setStat] = useState({ value: goal.stat?.value ?? '', label: goal.stat?.label ?? '' });
-  const [habits, setHabits] = useState(() => liveHabits(idx, goal.id, today));
+  const [initialHabits] = useState(() => liveHabits(idx, goal.id, today));
+  const [habits, setHabits] = useState(initialHabits);
   const [removed, setRemoved] = useState([]);
 
   const set = (k, v) => setG((x) => setOpt(x, k, v));
@@ -31,11 +31,7 @@ export default function GoalEditor({ goal, api, onClose }) {
       [path[i], path[i + d]] = [path[i + d], path[i]];
       return { ...x, path };
     });
-  const addPhase = () =>
-    setG((x) => {
-      const start = x.path.length ? addDays(x.path.at(-1).end, 1) : today;
-      return { ...x, path: [...x.path, { name: '', start, end: addDays(start, 13) }] };
-    });
+  const addPhase = () => setG((x) => ({ ...x, path: [...x.path, nextPhase(x.path, today)] }));
 
   const hasMeasure = String(m.unit).trim() !== '' || m.target !== '';
   const measureOk = !hasMeasure || (String(m.unit).trim() !== '' && Number(m.target) > 0);
@@ -49,7 +45,7 @@ export default function GoalEditor({ goal, api, onClose }) {
     out = setOpt(out, 'measure', hasMeasure ? { unit: m.unit.trim(), target: Number(m.target), per: m.per } : null);
     out = setOpt(out, 'stat', stat.value.trim() ? { value: stat.value.trim(), label: stat.label.trim() } : null);
     out.path = g.path.map((p) => setOpt(setOpt({ ...p, name: p.name.trim() }, 'note', p.note?.trim()), 'target', p.target));
-    api.save([out, ...habits.map(cleanHabit)]);
+    api.save([out, ...changedOnly(initialHabits, habits.map(cleanHabit))]);
     removed.forEach((id) => api.removeHabit(id));
     onClose();
     if (isNew) api.open({ view: 'goal', goalId: out.id });

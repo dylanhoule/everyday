@@ -67,6 +67,17 @@ export function itemsOn(idx, date) {
   );
 }
 
+// What Today's Earlier group lists: older tasks still undone or finished while open (so a
+// mis-tap can be undone), then all of yesterday's items, done or not.
+export function earlierItems(idx, today) {
+  const yesterday = addDays(today, -1);
+  const older = idx.tasks
+    .filter((t) => t.date < yesterday && (!t.done || (t.doneDate && t.doneDate >= yesterday)))
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .map((t) => ({ ...itemsOn(idx, t.date).find((i) => i.kind === 'task' && i.id === t.id), done: !!t.done }));
+  return [...older, ...itemsOn(idx, yesterday)];
+}
+
 export function dayScore(idx, date) {
   const items = itemsOn(idx, date);
   if (!items.length) return null;

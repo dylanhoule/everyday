@@ -64,7 +64,7 @@ export default function GoalDetail({ api, goalId }) {
           <span className="big">{h.value}</span>
           <span className="stat-label">{h.label}</span>
         </div>
-        {!h.value.endsWith('%') && (
+        {status !== 'idle' && !h.value.endsWith('%') && (
           <div className="stat">
             <span className="big with-bar">
               <span className="vbar small" aria-hidden="true">

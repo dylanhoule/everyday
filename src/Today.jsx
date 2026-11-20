@@ -1,6 +1,6 @@
 import { addDays, dayParts } from './date.js';
 import { blankGoal, blankTask } from './records.js';
-import { itemsOn, streaks, toKeep } from './score.js';
+import { earlierItems, itemsOn, streaks, toKeep } from './score.js';
 import { activeGoals, coachNote } from './goals.js';
 import { cap, fmtDate, fmtTime, numberWord } from './words.js';
 import { Icon } from './Nav.jsx';
@@ -36,16 +36,6 @@ export function ItemRow({ item, api, showGoal, showNote, label }) {
       <span className="item-time">{label ?? fmtTime(item.time)}</span>
     </li>
   );
-}
-
-// Yesterday's unchecked items (still open) plus older undone tasks (checking just clears them).
-function earlierItems(idx, today) {
-  const yesterday = addDays(today, -1);
-  const older = idx.tasks
-    .filter((t) => !t.done && t.date < yesterday)
-    .sort((a, b) => a.date.localeCompare(b.date))
-    .map((t) => itemsOn(idx, t.date).find((i) => i.kind === 'task' && i.id === t.id));
-  return [...older, ...itemsOn(idx, yesterday).filter((i) => !i.done)];
 }
 
 export function ScoreBlock({ api }) {
@@ -98,18 +88,20 @@ export default function Today({ api }) {
   const addTask = () => api.openSheet({ kind: 'task', rec: blankTask(today) });
   const isActive = (i) => i.goal && !i.goal.archivedOn;
 
+  const left = earlier.filter((i) => !i.done).length;
+  // Native <details>: open while something is left, collapsible once it's all checked.
   const earlierGroup = earlier.length > 0 && (
-    <section className="group earlier">
-      <header className="group-head">
+    <details className="group earlier" open={left > 0}>
+      <summary className="group-head">
         <span>Earlier</span>
-        <span className="muted">{earlier.length} left</span>
-      </header>
+        <span className="muted">{left ? `${left} left` : 'All done'}</span>
+      </summary>
       <ul className="items">
         {earlier.map((i) => (
           <ItemRow key={`${i.kind}:${i.id}:${i.date}`} item={i} api={api} showGoal label={i.date === yesterday ? 'Yesterday' : fmtDate(i.date)} />
         ))}
       </ul>
-    </section>
+    </details>
   );
 
   const groups = [

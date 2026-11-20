@@ -62,7 +62,8 @@ export const ageDays = (goal, today) => daysBetween(goal.createdAt, today);
 
 export function goalStatus(idx, goal, today) {
   const pct = goalPct(idx, goal, today);
-  if (ageDays(goal, today) < NEW_DAYS || pct === null) return 'new';
+  if (ageDays(goal, today) < NEW_DAYS) return 'new';
+  if (pct === null) return 'idle'; // nothing due lately: only tasks, or past its last day
   return pct >= ON_TRACK ? 'on' : 'slipping';
 }
 
@@ -88,7 +89,7 @@ export function habitWeek(idx, habit, goal, today) {
 
 export function headline(idx, goal, today) {
   if (goal.date && today <= goal.date) return { value: String(daysBetween(today, goal.date)), label: 'days to go' };
-  if (goalStatus(idx, goal, today) === 'new') {
+  if (['new', 'idle'].includes(goalStatus(idx, goal, today))) {
     const n = ageDays(goal, today) + 1;
     return { value: String(n), label: n === 1 ? 'day in' : 'days in' };
   }
@@ -124,6 +125,7 @@ export function goalReason(idx, goal, today) {
     const age = ageDays(goal, today);
     return age === 0 ? 'Started today' : `Day ${age + 1}`;
   }
+  if (status === 'idle') return '';
   const stats = statsOf(idx, goal, today);
   if (!stats.length) return '';
   if (status === 'slipping') return `${pick(stats, (s) => s.due - s.done).habit.title} slips most`;

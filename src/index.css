@@ -1322,3 +1322,10 @@ button {
 .heatmap .col-head h2 {
   flex: 1 0 auto;
 }
+.earlier summary {
+  cursor: pointer;
+  list-style: none;
+}
+.earlier summary::-webkit-details-marker {
+  display: none;
+}

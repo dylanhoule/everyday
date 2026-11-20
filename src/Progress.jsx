@@ -107,7 +107,7 @@ export default function Progress({ api }) {
                   </span>
                   {status === 'new' ? (
                     <span className="bg-new">New</span>
-                  ) : (
+                  ) : status === 'idle' ? null : (
                     <span className="bg-pct">
                       <span className="vbar small" aria-hidden="true">
                         <span style={{ height: `${pct ?? 0}%` }} />

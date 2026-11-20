@@ -3,7 +3,7 @@ import { barFill, dateLabel, goalPct, goalStatus, habitWeek, headline, measurePr
 import { liveHabits } from './GoalEditor.jsx';
 
 const STATUS = { on: 'On track', slipping: 'Slipping', new: 'New' };
-export const StatusChip = ({ status }) => <span className={`status ${status}`}>{STATUS[status]}</span>;
+export const StatusChip = ({ status }) => (STATUS[status] ? <span className={`status ${status}`}>{STATUS[status]}</span> : null);
 
 export function Segments({ fill, n = 5 }) {
   return (
@@ -44,7 +44,7 @@ export default function GoalCard({ goal, api, wide }) {
   const todays = itemsOn(idx, today).filter((i) => i.goal?.id === goal.id);
   const habits = liveHabits(idx, goal.id, today);
   const open = () => api.open({ view: 'goal', goalId: goal.id });
-  const showPct = wide && !h.value.endsWith('%'); // skip when the headline already is the %
+  const showPct = wide && status !== 'idle' && !h.value.endsWith('%'); // skip when the headline already is the %
 
   return (
     <article

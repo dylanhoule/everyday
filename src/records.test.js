@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { migrate, logId, blankHabit, blankTask, blankGoal } from './records.js';
+import { migrate, logId, blankHabit, blankTask, blankGoal, syncMerge, changedOnly, nextPhase } from './records.js';
 
 const out = migrate([
   { id: 'a', text: 'Buy milk\n2%, not whole', done: false, date: '2026-11-18', updatedAt: 5 },
@@ -39,5 +39,22 @@ assert.deepStrictEqual(Object.keys(blankTask('2026-11-19', 'g')).sort(),
 const g = blankGoal('2026-11-19');
 assert.equal(g.createdAt, '2026-11-19');
 assert.deepStrictEqual(g.path, []);
+
+// syncMerge: junk in the remote blob never reaches merge()
+const merged = syncMerge([{ id: 'x', type: 'task', title: 'X', date: '2026-11-19', done: false, updatedAt: 1 }],
+  [null, 42, { text: 'no id' }, { id: 'y', text: 'Legacy', done: false, date: '2026-11-19', updatedAt: 2 }], 1000);
+assert.deepStrictEqual(merged.map((r) => r.id).sort(), ['x', 'y']);
+assert.equal(merged.find((r) => r.id === 'y').type, 'task');
+
+// changedOnly: unchanged records are not re-saved (so they can't clobber another device's edit)
+const h1 = { id: 'h1', type: 'habit', title: 'A', days: [1] };
+const h2 = { id: 'h2', type: 'habit', title: 'B', days: [2] };
+const fresh = { id: 'h3', type: 'habit', title: 'C', days: [3] };
+assert.deepStrictEqual(changedOnly([h1, h2], [h1, { ...h2, title: 'B2' }, fresh]).map((r) => r.id), ['h2', 'h3']);
+
+// nextPhase: starts the day after the last phase, or today when that end is missing
+assert.deepStrictEqual(nextPhase([], '2026-11-19'), { name: '', start: '2026-11-19', end: '2026-12-02' });
+assert.equal(nextPhase([{ name: 'A', start: '2026-11-01', end: '2026-11-20' }], '2026-11-19').start, '2026-11-21');
+assert.equal(nextPhase([{ name: 'A', start: '2026-11-01' }], '2026-11-19').start, '2026-11-19');
 
 console.log('records.test.js: all assertions passed');

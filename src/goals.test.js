@@ -61,7 +61,7 @@ assert.equal(goalPct(on, g, T), 86);
 assert.equal(goalStatus(on, g, T), 'on');
 assert.equal(goalStatus(slip, g, T), 'slipping');
 assert.equal(goalStatus(on, { ...g, createdAt: '2026-11-15' }, T), 'new'); // under 7 days old
-assert.equal(goalStatus(index([g]), g, T), 'new'); // no habits: pct null
+assert.equal(goalStatus(index([g]), g, T), 'idle'); // 18 days old, no habits: idle
 assert.deepStrictEqual(headline(on, g, T), { value: '86%', label: 'daily work, 14 days' });
 assert.deepStrictEqual(headline(on, { ...g, createdAt: T }, T), { value: '1', label: 'day in' });
 assert.deepStrictEqual(headline(on, { ...g, createdAt: '2026-11-16' }, T), { value: '4', label: 'days in' });
@@ -79,5 +79,15 @@ assert.equal(goalReason(on, { ...g, createdAt: '2026-11-16' }, T), 'Day 4');
 assert.equal(coachNote(slip, T), 'Lean and strong is slipping. 160 g protein missed 3 of the last 5 times it was due.');
 assert.equal(coachNote(on, T), null);
 assert.deepStrictEqual(activeGoals(index([g, { ...hm, archivedOn: '2026-11-10' }]), T).map((x) => x.id), ['g']);
+
+// A goal 7+ days old with nothing due in the window is idle, not New forever
+const taskOnly = { ...g, id: 'to', createdAt: '2026-08-01' };
+assert.equal(goalStatus(index([taskOnly]), taskOnly, T), 'idle');
+assert.equal(sideBadge(index([taskOnly]), taskOnly, T), '');
+assert.equal(goalReason(index([taskOnly]), taskOnly, T), '');
+assert.deepStrictEqual(headline(index([taskOnly]), taskOnly, T), { value: '111', label: 'days in' });
+const raceOver = { ...hm, date: '2026-10-01', createdAt: '2026-08-01' }; // habits stop after race day
+assert.equal(goalStatus(index([raceOver, run]), raceOver, T), 'idle');
+assert.equal(goalStatus(index([g]), { ...g, createdAt: '2026-11-15' }, T), 'new'); // young: still New
 
 console.log('goals.test.js: all assertions passed');
