@@ -54,12 +54,15 @@ export function parseICS(text) {
 
 export const eventMs = (e) => (e.allDay ? Date.parse(`${e.date}T00:00:00`) : Date.parse(e.start));
 
-// Events from a day ago through `days` ahead, soonest first, capped so a huge feed stays small.
+// Events from two days ago through `days` ahead, soonest first, capped so a huge feed stays
+// small. Two days back because Canvas sends 11:59 PM deadlines as all-day events, and on a UTC
+// server today's all-day event is "yesterday" by the evening in the Americas. The client trims
+// to local days anyway.
 export function upcoming(events, nowMs, days = 15) {
   return events
     .filter((e) => {
       const t = eventMs(e);
-      return t >= nowMs - DAY_MS && t <= nowMs + days * DAY_MS;
+      return t >= nowMs - 2 * DAY_MS && t <= nowMs + days * DAY_MS;
     })
     .sort((a, b) => eventMs(a) - eventMs(b))
     .slice(0, 200);

@@ -1,3 +1,4 @@
+process.env.TZ = 'UTC'; // like the Vercel server; the client trims to local days
 import assert from 'node:assert';
 import { parseICS, upcoming } from './ics.js';
 
@@ -46,6 +47,10 @@ const now = Date.parse('2026-12-10T12:00:00Z');
 const old = { uid: 'old', title: 'Old', allDay: true, date: '2026-11-01' };
 const far = { uid: 'far', title: 'Far', allDay: true, date: '2027-01-30' };
 assert.deepStrictEqual(upcoming([far, ...parseICS(feed), old], now).map((e) => e.uid), ['event-2', 'event-assignment-1', 'event-3']);
+// Canvas sends 11:59 PM assignments as all-day events; at 7:30 PM Eastern on the due day the
+// server (UTC) is already past midnight. The event must still be sent.
+const dueTonight = { uid: 'tonight', title: 'Essay', allDay: true, date: '2026-11-20' };
+assert.deepStrictEqual(upcoming([dueTonight], Date.parse('2026-11-21T00:30:00Z')).map((e) => e.uid), ['tonight']);
 const many = Array.from({ length: 500 }, (_, i) => ({ uid: `m${i}`, title: 'M', allDay: true, date: '2026-12-11' }));
 assert.equal(upcoming(many, now).length, 200);
 

@@ -58,7 +58,7 @@ Two ways to get real information into everyday without typing it on a phone:
 - Each seed record is upserted with `updatedAt: now`, except:
   - an existing goal keeps its `createdAt`; an existing habit keeps its `startDate` (history continuity);
   - an existing task keeps `done` and `doneDate`.
-  - a seeded goal that was archived is un-archived (the plan says it's active).
+  - a seeded goal that was archived stays archived (archive wins like other in-app removals; un-archiving would turn the archived stretch into misses). Revised after final review.
   - **In-app removals win** (Claude's call): a seed record whose existing copy is tombstoned, or a habit whose existing copy has ended (`endDate < today`), is skipped, never revived. Reviving would rewrite history (the ended stretch would turn into misses). To bring one back, the skill adds it under a new slug.
   - **No backdating** (Claude's call): a *new* goal's `createdAt` or a *new* habit's `startDate` that is before the apply day moves up to the apply day. Batches can apply days after they're written, and seeds carry no logs, so a past start could only add misses. Task dates and path phases stay as written.
 - For each goal in the batch: its live habits whose id starts with `seed:` and that are not in the batch are ended (same rule as `removeHabit`: `endDate` yesterday, or tombstoned if started today). Habits the user added in-app (UUID ids) and other goals' records are untouched.

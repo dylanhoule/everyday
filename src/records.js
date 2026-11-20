@@ -98,7 +98,10 @@ export function applySeeds(records, seeds, today, now) {
       const old = byId.get(seed.id);
       if (old?.deleted || (old?.type === 'habit' && old.endDate && old.endDate < today)) continue;
       const next = { ...seed };
-      if (old && seed.type === 'goal') next.createdAt = old.createdAt;
+      if (old && seed.type === 'goal') {
+        next.createdAt = old.createdAt;
+        if (old.archivedOn) next.archivedOn = old.archivedOn; // archive wins, like other in-app removals
+      }
       if (old && seed.type === 'habit') next.startDate = old.startDate;
       if (old && seed.type === 'task') {
         next.done = !!old.done;
@@ -119,6 +122,14 @@ export function applySeeds(records, seeds, today, now) {
     put({ id: mark, type: 'seedmark' });
   }
   return out;
+}
+
+// One sync round for seeds. After a real pull, merge then apply pending batches. With no sync at
+// all (no passphrase stored), apply locally stamped 0 so any synced copy of those records wins
+// if this device joins sync later. A stored key with a failed pull: change nothing.
+export function syncStep(cur, remote, seeds, { hasKey, today, now }) {
+  if (remote) return applySeeds(syncMerge(cur, remote, now), seeds, today, now);
+  return hasKey ? cur : applySeeds(cur, seeds, today, 0);
 }
 
 // Everything wrong with a SEEDS array, one message per problem (empty = valid).

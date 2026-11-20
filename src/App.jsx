@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { today as todayIso } from './date.js';
-import { applySeeds, migrate, syncMerge } from './records.js';
+import { migrate, syncStep } from './records.js';
 import { SEEDS } from './seed.js';
 import { index } from './score.js';
 import * as A from './actions.js';
@@ -74,9 +74,9 @@ export default function App() {
       if (DEMO) return;
       const remote = await pull();
       // Seeds apply only after a real pull (so a stale device can't overwrite newer edits),
-      // or locally when this device has no sync at all (prompt dismissed, nothing stored).
-      if (!cancelled && remote) setRecords((cur) => applySeeds(syncMerge(cur, remote), SEEDS, todayIso(), Date.now()));
-      else if (!cancelled && !storedKey()) setRecords((cur) => applySeeds(cur, SEEDS, todayIso(), Date.now()));
+      // or locally, stamped 0, when this device has no sync at all (see records.js syncStep).
+      if (!cancelled)
+        setRecords((cur) => syncStep(cur, remote, SEEDS, { hasKey: !!storedKey(), today: todayIso(), now: Date.now() }));
       fetchCanvas().then((c) => !cancelled && c && setCanvas(c));
     };
     sync();

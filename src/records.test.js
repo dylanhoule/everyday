@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { migrate, logId, blankHabit, blankTask, blankGoal, syncMerge, changedOnly, nextPhase, applySeeds, seedErrors } from './records.js';
+import { migrate, logId, blankHabit, blankTask, blankGoal, syncMerge, changedOnly, nextPhase, applySeeds, seedErrors, syncStep } from './records.js';
 
 const out = migrate([
   { id: 'a', text: 'Buy milk\n2%, not whole', done: false, date: '2026-11-18', updatedAt: 5 },
@@ -81,7 +81,7 @@ assert.equal(nextPhase([{ name: 'A', start: '2026-11-01' }], '2026-11-19').start
   const by = Object.fromEntries(applySeeds(edited, [b1, b2], later, 300).map((x) => [x.id, x]));
   assert.equal(by['seed:fin'].title, 'Finals v2');
   assert.equal(by['seed:fin'].createdAt, T); // history start kept
-  assert.equal('archivedOn' in by['seed:fin'], false); // re-seeded goal is active again
+  assert.equal(by['seed:fin'].archivedOn, '2026-11-25'); // archive wins: re-seeding never turns the archived stretch into misses
   assert.equal(by['seed:fin:cs'].startDate, T);
   assert.deepStrictEqual(by['seed:fin:cs'].days, [1, 2, 3, 4, 5]);
   assert.equal(by['seed:fin:math'].endDate, '2026-11-26'); // dropped seeded habit ended, not deleted
@@ -102,6 +102,16 @@ assert.equal(nextPhase([{ name: 'A', start: '2026-11-01' }], '2026-11-19').start
   assert.equal(rb['seed:fin:t:outline'].deleted, true); // deleted task not revived
   assert.equal(rb['seed:fin:new'].startDate, later); // new habit starts on the apply day
   assert.equal(rb['seed:new'].createdAt, later); // new goal too
+
+  // syncStep: a device without sync applies seeds stamped 0, so any synced edit wins later
+  const remote = r.map((x) => (x.id === goal.id ? { ...x, title: 'Edited elsewhere', updatedAt: 500 } : x.id === outline.id ? { ...x, deleted: true, updatedAt: 500 } : x));
+  const offline = syncStep([], null, [b1], { hasKey: false, today: later, now: 900 });
+  assert.ok(offline.some((x) => x.id === 'seedmark:2026-11-20-finals'));
+  const joined = Object.fromEntries(syncStep(offline, remote, [b1], { hasKey: true, today: later, now: 1000 }).map((x) => [x.id, x]));
+  assert.equal(joined['seed:fin'].title, 'Edited elsewhere');
+  assert.equal(joined['seed:fin:t:outline'].deleted, true);
+  assert.deepStrictEqual(syncStep(r, null, [b1], { hasKey: true, today: later, now: 1 }), r); // key stored, pull failed: untouched
+  assert.equal(syncStep([], remote, [b1], { hasKey: true, today: later, now: 1000 }).length, remote.length); // already marked remotely
 
   assert.deepStrictEqual(seedErrors([b1, b2]), []);
   const bad = seedErrors([
