@@ -5,7 +5,10 @@
 const KEY_STORE = 'syncKey';
 // Same-origin by default (app + api/ on one Vercel project). Set VITE_SYNC_URL
 // only if the app is hosted somewhere other than the API (then enable CORS too).
-const ENDPOINT = `${import.meta.env.VITE_SYNC_URL || ''}/api/todos`;
+const ENDPOINT = `${import.meta.env?.VITE_SYNC_URL || ''}/api/todos`;
+
+// The saved passphrase, without prompting.
+export const storedKey = () => localStorage.getItem(KEY_STORE)?.trim() || null;
 
 // Read the passphrase, prompting once if unset. Returns null if dismissed.
 export function getKey() {
