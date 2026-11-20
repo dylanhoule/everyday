@@ -1,6 +1,6 @@
 // Dev-only sample data shaped like everyday-selection.pdf. Loaded with /?demo under
 // `npm run dev`; App never persists or syncs it.
-import { addDays } from './date.js';
+import { addDays, dayParts } from './date.js';
 import { logId } from './records.js';
 import { habitDueOn } from './score.js';
 
@@ -88,4 +88,22 @@ export function demoRecords(today) {
   ].map((t) => ({ type: 'task', updatedAt: ts, ...t }));
 
   return [...goals, ...habits, ...logs, ...tasks];
+}
+
+// Sample Canvas feed for /?demo, relative to today.
+export function demoCanvas(today) {
+  const at = (n, h, m) => {
+    const d = dayParts(addDays(today, n));
+    d.setHours(h, m);
+    return d.toISOString();
+  };
+  const events = [
+    { uid: 'c1', title: 'Project 3 outline', course: 'ENGL-1102', allDay: false, start: at(0, 23, 59) },
+    { uid: 'c2', title: 'Lay 6.3 problems', course: 'MATH-1554', allDay: false, start: at(1, 8, 0) },
+    { uid: 'c3', title: 'Quiz 9', course: 'CS-1331', allDay: true, date: addDays(today, 2) },
+    { uid: 'c4', title: 'Project 3 draft', course: 'ENGL-1102', allDay: false, start: at(4, 23, 59) },
+    { uid: 'c5', title: 'Reading response 8', course: 'LING-2001', allDay: true, date: addDays(today, 6) },
+    { uid: 'c6', title: 'Homework 10', course: 'CS-1331', allDay: false, start: at(9, 14, 0) },
+  ];
+  return { at: Date.now(), status: 'ok', events };
 }

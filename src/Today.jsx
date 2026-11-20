@@ -6,6 +6,7 @@ import { cap, fmtDate, fmtTime, numberWord } from './words.js';
 import { Icon } from './Nav.jsx';
 import GoalCard from './GoalCard.jsx';
 import Heatmap from './Heatmap.jsx';
+import DuePanel from './DuePanel.jsx';
 
 const QUOTE = 'What you do every day matters more than what you do once in a while.';
 const counted = (n, one, many) => `${numberWord(n)} ${n === 1 ? one : many}`;
@@ -174,6 +175,7 @@ export default function Today({ api }) {
         {earlierGroup}
         {list}
         {coach}
+        <DuePanel api={api} />
       </div>
     );
 
@@ -213,6 +215,7 @@ export default function Today({ api }) {
           <ScoreBlock api={api} />
           {earlierGroup}
           {list}
+          <DuePanel api={api} />
           {coach}
         </section>
       </div>

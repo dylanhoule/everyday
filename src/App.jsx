@@ -5,6 +5,7 @@ import { index } from './score.js';
 import * as A from './actions.js';
 import { purge } from './merge.js';
 import { pull, push } from './sync.js';
+import { fetchCanvas, readCanvas } from './canvas.js';
 import Nav from './Nav.jsx';
 import Today from './Today.jsx';
 import Goals from './Goals.jsx';
@@ -46,10 +47,14 @@ export default function App() {
   const [today, setToday] = useState(todayIso);
   const [nav, setNav] = useState({ view: 'today' });
   const [sheet, setSheet] = useState(null);
+  const [canvas, setCanvas] = useState(readCanvas);
   const wide = useWide();
 
   useEffect(() => {
-    demoModule?.then((m) => setRecords(m.demoRecords(todayIso())));
+    demoModule?.then((m) => {
+      setRecords(m.demoRecords(todayIso()));
+      setCanvas(m.demoCanvas(todayIso()));
+    });
   }, []);
 
   // Persist on every change and push to the sync store (debounced in sync.js).
@@ -68,6 +73,7 @@ export default function App() {
       if (DEMO) return;
       const remote = await pull();
       if (!cancelled && remote) setRecords((cur) => syncMerge(cur, remote));
+      fetchCanvas().then((c) => !cancelled && c && setCanvas(c));
     };
     sync();
     const onVis = () => document.visibilityState === 'visible' && sync();
@@ -89,6 +95,7 @@ export default function App() {
     today,
     wide,
     nav,
+    canvas,
     open: (n) => {
       setNav(n);
       window.scrollTo(0, 0);
