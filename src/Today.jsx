@@ -4,6 +4,7 @@ import { itemsOn, streaks, toKeep } from './score.js';
 import { activeGoals, coachNote } from './goals.js';
 import { cap, fmtDate, fmtTime, numberWord } from './words.js';
 import { Icon } from './Nav.jsx';
+import GoalCard from './GoalCard.jsx';
 
 const QUOTE = 'What you do every day matters more than what you do once in a while.';
 const counted = (n, one, many) => `${numberWord(n)} ${n === 1 ? one : many}`;
@@ -79,7 +80,7 @@ export function ScoreBlock({ api }) {
   );
 }
 
-export default function Today({ api, goalGrid = null, heatmap = null }) {
+export default function Today({ api }) {
   const { idx, today, wide } = api;
   const goals = activeGoals(idx);
   const items = itemsOn(idx, today);
@@ -193,7 +194,23 @@ export default function Today({ api, goalGrid = null, heatmap = null }) {
         </p>
       </header>
       <div className="today-grid">
-        <div className="today-goals">{goalGrid ?? empty}</div>
+        <div className="today-goals">
+          {goals.length ? (
+            <>
+              <header className="col-head">
+                <h2>Goals</h2>
+                <span className="muted">% = how often you did the daily work, last 14 days</span>
+              </header>
+              <div className="goal-grid">
+                {goals.map((g) => (
+                  <GoalCard key={g.id} goal={g} api={api} wide />
+                ))}
+              </div>
+            </>
+          ) : (
+            empty
+          )}
+        </div>
         <section className="today-col">
           <header className="col-head">
             <h2>Today</h2>
@@ -206,7 +223,6 @@ export default function Today({ api, goalGrid = null, heatmap = null }) {
           {coach}
         </section>
       </div>
-      {heatmap}
     </div>
   );
 }

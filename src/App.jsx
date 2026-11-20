@@ -109,7 +109,7 @@ export default function App() {
   const view = wide && nav.view === 'goals' ? 'today' : nav.view;
   const screen =
     view === 'goal' && idx.goalById.has(nav.goalId) ? (
-      <GoalDetail api={api} goalId={nav.goalId} />
+      <GoalDetail key={nav.goalId} api={api} goalId={nav.goalId} />
     ) : view === 'goals' ? (
       <Goals api={api} />
     ) : view === 'progress' ? (

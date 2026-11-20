@@ -20,12 +20,15 @@ export const Icon = {
 
 export default function Nav({ api }) {
   const { nav, open, wide, idx, today } = api;
-  const item = (view, label) => (
-    <button className={`nav-item ${nav.view === view ? 'on' : ''}`} aria-current={nav.view === view ? 'page' : undefined} onClick={() => open({ view })}>
+  const item = (view, label) => {
+    const on = nav.view === view || (view === 'goals' && nav.view === 'goal');
+    return (
+    <button className={`nav-item ${on ? 'on' : ''}`} aria-current={on ? 'page' : undefined} onClick={() => open({ view })}>
       {Icon[view]}
       <span>{label}</span>
     </button>
-  );
+    );
+  };
 
   if (!wide)
     return (
