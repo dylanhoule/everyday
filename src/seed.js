@@ -277,4 +277,152 @@ const appearanceBlock = (() => {
   };
 })();
 
-export const SEEDS = [halfMarathonBlock, appearanceBlock];
+// From plans/dylandoingit-brand-plan-brief.md: launch and run @dylandoingit, Nov 21, 2026 to Jan 10, 2027.
+const brandBlock = (() => {
+  const T = '2026-11-21';
+  const B = 'seed:dylandoingit';
+  const lines = (...l) => l.join('\n');
+
+  const CAPTION = 'Caption: line 1 extends the hook, 2-4 short lines of specifics, 1 question, 3-5 specific hashtags.';
+  const PRIVACY = 'Privacy: no routes or maps near campus (pace, distance, HR only), no last name, no school name ("CS student"), check frames for building names, room numbers, schedules. Tag locations only after leaving.';
+  const REEL = lines(
+    'Hook in the first 1.5 s: on-screen text + motion already happening, no intro. Title it "doing ___".',
+    'Length: montage 7-20 s; talking or recipe 30-60 s. Cut every dead second.',
+    'Cover: a frame from the video + the title, same spot every time.',
+    'Audio: voiceover or own audio; trending audio low under b-roll; no other app\'s watermark.',
+    CAPTION, PRIVACY, 'Reply to every comment within 1 hr of posting.',
+  );
+  const CAROUSEL = lines(
+    'Title it "doing ___". Same Lightroom preset on every photo.',
+    'Recipe: end on a recipe card (ingredients, protein per serving). Workout: end on a workout card (exercises, sets, reps).',
+    'Sunday recap: miles, lifts, steps, sleep, one photo per day.',
+    CAPTION, PRIVACY, 'Reply to every comment within 1 hr of posting.',
+  );
+
+  const task = (slug, date, title, note, extra = {}) => ({
+    id: `${B}:t:${slug}`, type: 'task', goalId: B, title, ...(note && { note }), date, done: false, ...extra,
+  });
+  // A feed post: counts toward the weekly "posts" measure. `extra` (optional) leads the note.
+  const post = (date, kind, what, extra) =>
+    task(`post-${date}`, date, `${kind}: ${what}`, extra ? `${extra}\n${kind === 'Reel' ? REEL : CAROUSEL}` : kind === 'Reel' ? REEL : CAROUSEL,
+      { amount: 1, unit: 'posts' });
+  const habit = (slug, title, days, extra = {}) => ({
+    id: `${B}:${slug}`, type: 'habit', goalId: B, title, days, startDate: '2026-11-30', ...extra,
+  });
+  const AWAY = 'Assumes a home kitchen. If you\'re not home, swap to a dining hall or dorm build.';
+
+  return {
+    id: '2026-11-21-dylandoingit',
+    records: [
+      {
+        id: B, type: 'goal', name: '@dylandoingit', title: 'Launch @dylandoingit and post 6 a week', color: 'purple',
+        date: '2026-11-30', endDate: '2027-01-10', createdAt: T,
+        measure: { unit: 'posts', target: 6, per: 'week' },
+        note: 'Launch Mon Nov 30, then 6 feed posts a week (4 reels, 2 carousels), stories on 4+ days, and 2+ finished posts banked at all times. Late post? Move it to that week\'s Saturday (edit its date); that isn\'t a miss. Optional extras: Sunday and Wednesday evening edit sessions (90 min each), one Trial Reel a week testing a second hook, 10 min of real comments on niche accounts a day. Goal for January: higher average watch time and sends per reach than the first 4 weeks.',
+        path: [
+          { name: 'Setup', start: T, end: '2026-11-29', note: 'Account, bio, preset, and gear by Nov 22. Bank 6 posts by Nov 29. Launch carousels Sat and Sun.', target: 2 },
+          { name: 'Week 1', start: '2026-11-30', end: '2026-12-06', note: 'Launch reel Monday. Standard week.', target: 6 },
+          { name: 'Week 2', start: '2026-12-07', end: '2026-12-13', note: 'Standard week.', target: 6 },
+          { name: 'Week 3: Finals', start: '2026-12-14', end: '2026-12-20', note: 'LING Mon, MATH Tue 6-8:50pm, CS Wed 8-10:50am. Mostly banked posts, no Wednesday edit session.', target: 4 },
+          { name: 'Week 4: Break', start: '2026-12-21', end: '2026-12-27', note: 'No post on Christmas.', target: 5 },
+          { name: 'Week 5: Race week', start: '2026-12-28', end: '2027-01-03', note: 'Race-day stories Friday, race reel Saturday.', target: 6 },
+          { name: 'Week 6', start: '2027-01-04', end: '2027-01-10', note: 'Monthly review Monday, then a standard week.', target: 6 },
+        ],
+      },
+
+      // Setup: due by Sun Nov 22 (dated Nov 21; the app's one-day grace runs through the 22nd).
+      task('creator-account', T, 'Switch @dylandoingit to a Creator account'),
+      task('profile', T, 'Set name, bio, and profile photo', 'Name field: "Dylan | doing it". No last name anywhere, no school name in the bio (say "CS student").'),
+      task('preset', T, 'Build the Lightroom preset and reel cover template', lines(
+        'Pick one accent: clay #B5673E or olive #6B7A4B. Base: off-white #F4F1EA, near-black #1C1C1C.',
+        'One neutral sans (Inter or Helvetica Neue), lowercase, one line per beat.',
+        'Keep text out of the bottom ~20% and the right edge of reels.',
+        'Same preset on every photo, same filter on every reel. Grade and crop only, no body modification.',
+      )),
+      task('gear', T, 'Order a phone tripod and wireless lav mic', lines(
+        'Budget about $50 total.',
+        'Tripod with a clamp and flexible legs.',
+        'Wireless lav with a Lightning receiver (iPhone 14 is Lightning, not USB-C).',
+      )),
+      task('bank-6', '2026-11-28', 'Bank 6 finished posts', lines(
+        'Due Sun Nov 29.',
+        'Launch: "The doing list" carousel, Banana Apple Pie Oats recipe card, 5:30am day-in-the-life reel.',
+        'Finals week: what I\'m not cutting (reel), 4-day split with almost no equipment (carousel), semester one photo dump (carousel; finish it Sat Dec 19).',
+        'Capture: 4K 30 fps for talking and b-roll, 1080p 120 fps slow-mo for lifts and runs. Lock exposure and focus, gridlines on, wipe the lens. Shoot near windows. Edit in Edits (or CapCut), photos in Lightroom.',
+      )),
+
+      // Launch
+      post('2026-11-28', 'Carousel', 'The doing list', 'What I\'m working on: sub-2 half on Jan 1, building apps, cooking more.'),
+      post('2026-11-29', 'Carousel', 'Banana Apple Pie Oats recipe card'),
+      post('2026-11-30', 'Reel', 'Doing a 5:30am day as a CS student', 'Launch post. Day-in-the-life with voiceover. Must be live today.'),
+
+      // Week 1
+      post('2026-12-01', 'Reel', 'Doing a high-protein plate at the dining hall'),
+      post('2026-12-02', 'Reel', 'Doing push day with one cable machine'),
+      post('2026-12-03', 'Carousel', 'What I eat in a day on a meal plan', 'Rough protein per meal.'),
+      post('2026-12-04', 'Reel', 'Rebuilding from 5 miles a week', 'Night run with a pace/HR overlay. No map near campus.'),
+      post('2026-12-06', 'Carousel', 'Week 1, done'),
+
+      // Week 2
+      post('2026-12-07', 'Reel', 'Doing a study day', 'Desk setup, focus blocks, timelapse + voiceover. Check frames for schedules and room numbers.'),
+      post('2026-12-08', 'Reel', 'Doing a Greek yogurt bowl that hits 40 g protein'),
+      post('2026-12-09', 'Reel', 'Doing pull day, cable only'),
+      post('2026-12-10', 'Carousel', 'Dorm fridge staples for hitting protein'),
+      post('2026-12-11', 'Reel', 'Easy run at Piedmont Park', 'Scenic + data overlay. The map is OK here (off campus).'),
+      post('2026-12-13', 'Carousel', 'Week 2, done'),
+
+      // Week 3: finals
+      post('2026-12-14', 'Reel', 'Finals week: what I\'m not cutting', 'Banked. Sleep, lifts, runs.'),
+      post('2026-12-16', 'Reel', 'Last final done, straight to a run', 'Shoot it live, simple cut.'),
+      post('2026-12-18', 'Carousel', 'My 4-day split with almost no equipment', 'Banked. Workout card on the last slide.'),
+      post('2026-12-20', 'Carousel', 'Semester one, done: photo dump', 'Banked photos; finish it Saturday.'),
+
+      // Week 4: break
+      post('2026-12-21', 'Reel', 'First morning of break, still up at 5:30'),
+      post('2026-12-22', 'Reel', 'First real kitchen in four months: high-protein dinner', AWAY),
+      post('2026-12-23', 'Reel', 'Doing training away from my gym'),
+      post('2026-12-24', 'Carousel', 'A holiday recipe I make', `Add it to the Recipe Bank. ${AWAY}`),
+      post('2026-12-27', 'Carousel', 'Week 4, done', 'Plus "half marathon in 5 days".'),
+
+      // Week 5: race week
+      post('2026-12-28', 'Reel', 'Half marathon Friday, from a low base: honest taper week'),
+      post('2026-12-29', 'Reel', 'What I\'m eating before a half marathon'),
+      post('2026-12-30', 'Carousel', '2026 done / 2027 doing list'),
+      post('2026-12-31', 'Reel', 'Last day of 2026, montage'),
+      task('race-stories', '2027-01-01', 'Race-day stories', 'Start line, watch screen at the mile markers, finish. No route map near campus.'),
+      post('2027-01-02', 'Reel', 'Doing a half marathon on New Year\'s Day', 'Splits overlay. Post it regardless of finish time.'),
+      post('2027-01-03', 'Carousel', 'Race recap', 'Splits, what went right and wrong, what\'s next.'),
+
+      // Week 6
+      task('monthly-review', '2027-01-04', 'Monthly review, 30 min', lines(
+        'Rank all posts. Make more of the top 20% formats; cut or rework the bottom 20%. Adjust next month\'s template.',
+        'This sets the watch-time and sends baseline for January.',
+        'Then ask Claude to seed the next stretch (the plan ends Jan 10).',
+      )),
+      post('2027-01-04', 'Reel', 'Spring semester reset', 'Room, schedule, goals.'),
+      post('2027-01-05', 'Reel', 'Plate build: rating the dining hall\'s protein options'),
+      post('2027-01-06', 'Reel', 'First lift after the half'),
+      post('2027-01-07', 'Carousel', 'Recipe card from the Recipe Bank'),
+      post('2027-01-08', 'Reel', 'First run after the half: recovery in the data'),
+      post('2027-01-10', 'Carousel', 'Week 6, done'),
+
+      // Recurring from Nov 30 (the goal's end date, Jan 10, stops them)
+      habit('capture', 'Capture 3 clips', [0, 1, 2, 3, 4, 5, 6], {
+        note: 'Wide, action, detail; 5-10 s each. Rear camera on the tripod; front camera only for quick handheld.',
+      }),
+      habit('stories-check', 'Stories on 4+ days this week', [0], {
+        note: 'Count this week\'s story days (1-3 frames each). Check it off only if it\'s 4 or more.',
+      }),
+      habit('weekly-review', 'Weekly review, 15 min', [0], {
+        time: '20:00',
+        note: lines(
+          'Log each post: views, average watch time, sends per reach, saves, follows.',
+          'Name the top post.',
+          'Count banked posts: keep 2 or more in reserve.',
+        ),
+      }),
+    ],
+  };
+})();
+
+export const SEEDS = [halfMarathonBlock, appearanceBlock, brandBlock];
