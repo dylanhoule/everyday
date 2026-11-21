@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "icons": "node scripts/gen-icons.mjs",
-    "test": "node src/date.test.js && node src/merge.test.js && node src/records.test.js && node src/score.test.js && node src/words.test.js && node src/goals.test.js && node src/actions.test.js && node src/ics.test.js && node src/canvas.test.js && node src/seed.test.js && node src/quotes.test.js"
+    "test": "node src/date.test.js && node src/merge.test.js && node src/records.test.js && node src/score.test.js && node src/words.test.js && node src/goals.test.js && node src/actions.test.js && node src/ics.test.js && node src/canvas.test.js && node src/seed.test.js && node src/quotes.test.js && node src/sync.test.js"
   },
   "dependencies": {
     "@upstash/redis": "^1.38.0",
