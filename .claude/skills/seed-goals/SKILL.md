@@ -37,6 +37,8 @@ top of `src/seed.js` and the record shapes below before writing anything.
 - Slugs are lowercase words joined by hyphens. Reuse a goal's slug to update it.
 - Something the user removed in the app (ended habit, deleted task) is never revived by a
   seed. To bring it back, give it a NEW slug.
+- To remove seeded habits, re-seed their goal (goal record included) without them; they end,
+  history kept. To remove a seeded task, list it again in the new batch with `deleted: true`.
 
 ## Record shapes
 

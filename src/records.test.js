@@ -1,4 +1,5 @@
 import assert from 'node:assert';
+import { index } from './score.js';
 import { migrate, logId, blankHabit, blankTask, blankGoal, syncMerge, changedOnly, nextPhase, applySeeds, seedErrors, syncStep } from './records.js';
 
 const out = migrate([
@@ -112,6 +113,11 @@ assert.equal(nextPhase([{ name: 'A', start: '2026-11-01' }], '2026-11-19').start
   assert.equal(joined['seed:fin:t:outline'].deleted, true);
   assert.deepStrictEqual(syncStep(r, null, [b1], { hasKey: true, today: later, now: 1 }), r); // key stored, pull failed: untouched
   assert.equal(syncStep([], remote, [b1], { hasKey: true, today: later, now: 1000 }).length, remote.length); // already marked remotely
+
+  // A later batch removes a seeded task by listing it again with deleted: true
+  const dropTask = applySeeds(r, [b1, { id: '2026-11-28-drop', records: [{ ...outline, deleted: true }] }], later, 500);
+  assert.equal(dropTask.find((x) => x.id === outline.id).deleted, true);
+  assert.equal(index(dropTask).tasks.some((t) => t.id === outline.id), false);
 
   assert.deepStrictEqual(seedErrors([b1, b2]), []);
   const bad = seedErrors([

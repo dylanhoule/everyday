@@ -425,4 +425,62 @@ const brandBlock = (() => {
   };
 })();
 
-export const SEEDS = [halfMarathonBlock, appearanceBlock, brandBlock];
+// Re-seed of seed:appearance: fold the daily items into a morning and a night routine.
+// Keeps the goal's one-off tasks; ends the habits left out; removes the separate December
+// Differin items (now part of the night routine).
+const appearanceRoutinesBlock = (() => {
+  const T = '2026-11-21';
+  const END = '2027-05-09';
+  const ALL = [0, 1, 2, 3, 4, 5, 6];
+  const A = 'seed:appearance';
+  const lines = (...l) => l.join('\n');
+  return {
+    id: '2026-11-21-appearance-routines',
+    records: [
+      {
+        id: A, type: 'goal', name: 'Appearance', title: 'Clear skin, wavy hair, upright posture, a whiter smile, fitted clothes', color: 'cyan',
+        date: END, createdAt: T,
+        note: 'Clear, even skin; medium-length wavy hair (longer on top, short tapered sides); shoulders back, neck stacked; a clean, whiter smile; a fitted core wardrobe instead of oversized hoodies; 7.5+ hours of sleep. Review May 9 against photos and logs.',
+        path: [
+          { name: 'Set up', start: T, end: '2026-12-20', note: 'Products today, Differin from Nov 30, first cut by Dec 5, closet audit Dec 6, wardrobe phase 1 by Dec 20.' },
+          { name: 'Winter break', start: '2026-12-21', end: '2027-01-31', note: 'Differin nightly from Dec 28, cheek bumps fewer by Jan 2, dentist by Jan 9, whitening Jan 10 to 31, skin check Jan 16, second cut, wardrobe phase 2 by Jan 31.' },
+          { name: 'Check-in', start: '2027-02-01', end: '2027-02-21', note: 'Posture visibly better in side photos by Feb 14, red marks faded by Feb 21.' },
+          { name: 'Finish', start: '2027-02-22', end: END, note: 'Third cut Mar 13 to 27. Clear, even skin and medium wavy hair by May 9.' },
+        ],
+      },
+      {
+        id: `${A}:am-routine`, type: 'habit', goalId: A, title: 'Morning routine', days: ALL, startDate: T,
+        note: lines(
+          'Skin and hair, after the shower.',
+          'Cleanse (lukewarm water, pat dry)',
+          'Azelaic acid on the cheeks',
+          'SPF 30 moisturizer, lip balm',
+          'Hair: shampoo + condition Tue, Thu, Sat, Sun; rinse + condition otherwise',
+          'Style: 2 to 3 sprays of leave-in, sea salt spray or mousse, scrunch up, air dry or diffuse. Hands off while it dries.',
+        ),
+      },
+      {
+        id: `${A}:pm-routine`, type: 'habit', goalId: A, title: 'Night routine', days: ALL, startDate: T, time: '21:15',
+        note: lines(
+          'Posture, floss, skin, then in bed by 10:15. Check it off once you\'re in bed.',
+          'Posture, 8 min: chin tucks 2 × 10 (3 s hold), wall angels 2 × 10, doorway pec stretch 2 × 30 s / side, prone Y-T-W 1 × 10 each, optional dead hang 2 × 30 s',
+          'Floss',
+          'Cleanse (lukewarm water, pat dry)',
+          'Differin on its nights: Mon, Wed, Fri from Nov 30; every other night Dec 14 to 27; nightly from Dec 28 if flaking stays mild. Irritated? Skip a night (not a miss) and don\'t advance until the skin settles.',
+          'PM moisturizer, lip balm',
+          'In bed by 10:15 for 7.5+ hours.',
+        ),
+      },
+      {
+        id: `${A}:grooming`, type: 'habit', goalId: A, title: 'Sunday grooming', days: [0], startDate: T,
+        note: lines('Brows and stray neck hairs, nose and ear hair, nails.', 'Optional: change the pillowcase and wipe the phone screen (Wednesdays too).'),
+      },
+      // Separate Differin nights, now covered by the night routine: removed.
+      ...['2026-12-14', '2026-12-16', '2026-12-18', '2026-12-20', '2026-12-22', '2026-12-24', '2026-12-26'].map((d) => ({
+        id: `${A}:t:differin-${d}`, type: 'task', goalId: A, title: 'Differin', date: d, time: '21:30', done: false, deleted: true,
+      })),
+    ],
+  };
+})();
+
+export const SEEDS = [halfMarathonBlock, appearanceBlock, brandBlock, appearanceRoutinesBlock];
