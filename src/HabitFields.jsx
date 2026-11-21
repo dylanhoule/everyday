@@ -26,7 +26,7 @@ export default function HabitFields({ habit, onChange }) {
         <input value={habit.title} placeholder="Run 4× a week" onChange={(e) => onChange({ ...habit, title: e.target.value })} />
       </Field>
       <Field label="Note" wide>
-        <input value={habit.note ?? ''} placeholder="Zone 2, heart rate under 150" onChange={(e) => set('note', e.target.value)} />
+        <textarea rows={3} value={habit.note ?? ''} placeholder="Zone 2, heart rate under 150" onChange={(e) => set('note', e.target.value)} />
       </Field>
       <div className="field field-wide">
         <span className="field-label">Days</span>

@@ -26,7 +26,7 @@ export function ItemRow({ item, api, showGoal, showNote, label }) {
       </button>
       <button className="item-body" onClick={() => api.openSheet({ kind: 'item', item })}>
         <span className="item-title">{item.title}</span>
-        {showNote && item.note && <span className="item-note">{item.note}</span>}
+        {showNote && item.note && <span className="item-note">{item.note.split('\n')[0]}</span>}
         {showGoal && (
           <span className="item-goal">
             <span className="dot" />

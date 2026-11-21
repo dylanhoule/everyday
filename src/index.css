@@ -1358,3 +1358,7 @@ a.due-row:hover .item-title {
 .due-empty {
   margin: 12px 0 0;
 }
+/* Multi-line notes (a lift's exercise list): the list shows line one, the sheet shows all. */
+.note-full {
+  white-space: pre-line;
+}

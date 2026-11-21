@@ -50,7 +50,7 @@ export default function TaskSheet({ task, api, onClose }) {
           <input type="time" value={t.time ?? ''} onChange={(e) => set('time', e.target.value)} />
         </Field>
         <Field label="Note" wide>
-          <input value={t.note ?? ''} placeholder="Odd problems 1 to 17" onChange={(e) => set('note', e.target.value)} />
+          <textarea rows={3} value={t.note ?? ''} placeholder="Odd problems 1 to 17" onChange={(e) => set('note', e.target.value)} />
         </Field>
         <Field label="Amount (optional)">
           <div className="pair">

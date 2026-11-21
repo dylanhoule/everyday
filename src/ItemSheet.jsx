@@ -38,7 +38,7 @@ export default function ItemSheet({ item, api, onClose }) {
           <span className="dot" />
           {live.goal?.name ?? 'Other'}
         </p>
-        {live.note && <p>{live.note}</p>}
+        {live.note && <p className="note-full">{live.note}</p>}
         <p className="muted">
           {live.date === today ? 'Today' : fmtDate(live.date)} · {fmtTime(live.time)}
         </p>
