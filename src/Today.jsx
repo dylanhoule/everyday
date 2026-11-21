@@ -1,4 +1,4 @@
-import { addDays, dayParts } from './date.js';
+import { addDays, dayParts, daysBetween } from './date.js';
 import { blankGoal, blankTask } from './records.js';
 import { earlierItems, itemsOn, streaks, toKeep } from './score.js';
 import { activeGoals, coachNote } from './goals.js';
@@ -8,7 +8,20 @@ import GoalCard from './GoalCard.jsx';
 import Heatmap from './Heatmap.jsx';
 import DuePanel from './DuePanel.jsx';
 
-const QUOTE = 'What you do every day matters more than what you do once in a while.';
+// One a day, the same on every device: rotates by date, not at random per render.
+const QUOTES = [
+  ['What you do every day matters more than what you do once in a while.', 'Gretchen Rubin'],
+  ['You do not rise to the level of your goals. You fall to the level of your systems.', 'James Clear'],
+  ['Every action you take is a vote for the type of person you wish to become.', 'James Clear'],
+  ['How we spend our days is, of course, how we spend our lives.', 'Annie Dillard'],
+  ['Success is the sum of small efforts, repeated day in and day out.', 'Robert Collier'],
+  ['Motivation is what gets you started. Habit is what keeps you going.', 'Jim Ryun'],
+  ['We are what we repeatedly do. Excellence, then, is not an act, but a habit.', 'Will Durant'],
+  ['Small daily improvements over time lead to stunning results.', 'Robin Sharma'],
+  ['A year from now you may wish you had started today.', 'Karen Lamb'],
+  ['The successful warrior is the average man, with laser-like focus.', 'Bruce Lee'],
+];
+const quoteFor = (today) => QUOTES[daysBetween('2026-01-01', today) % QUOTES.length];
 const counted = (n, one, many) => `${numberWord(n)} ${n === 1 ? one : many}`;
 
 export function ItemRow({ item, api, showGoal, showNote, label }) {
@@ -78,6 +91,7 @@ export default function Today({ api }) {
   const items = itemsOn(idx, today);
   const earlier = earlierItems(idx, today);
   const note = coachNote(idx, today);
+  const quote = quoteFor(today);
   const yesterday = addDays(today, -1);
   const date = dayParts(today).toLocaleDateString('en-US', { weekday: 'long', month: wide ? 'long' : 'short', day: 'numeric' });
   const moves = items.length;
@@ -185,7 +199,7 @@ export default function Today({ api }) {
         <p className="date-line">{date}</p>
         <h1 className="headline">{headline}</h1>
         <p className="quote">
-          <em>“{QUOTE}”</em> Gretchen Rubin
+          <em>“{quote[0]}”</em> {quote[1]}
         </p>
       </header>
       <div className="today-grid">
