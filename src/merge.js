@@ -33,3 +33,8 @@ export function retireStale(list, keepIds, now = Date.now()) {
 export function purge(list, now = Date.now()) {
   return list.filter((t) => !(t.deleted && now - ts(t) > PURGE_MS));
 }
+
+// The server's save: fold an incoming copy into the stored one instead of replacing it, so a
+// device that hasn't pulled lately can't erase newer edits made on another device.
+export const storeMerge = (stored, incoming, now = Date.now()) =>
+  purge(merge(Array.isArray(stored) ? stored : [], incoming.filter((r) => r && typeof r.id === 'string')), now);

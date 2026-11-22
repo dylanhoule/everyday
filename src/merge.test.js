@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { merge, purge, retireStale } from './merge.js';
+import { merge, purge, retireStale, storeMerge } from './merge.js';
 
 // newer updatedAt wins, regardless of argument order
 assert.equal(merge([{ id: '1', text: 'old', updatedAt: 100 }], [{ id: '1', text: 'new', updatedAt: 200 }])[0].text, 'new');
@@ -57,5 +57,15 @@ assert.deepEqual(
 );
 assert.equal(retired['plan-2026-09-01-strength-1'].updatedAt, now);
 assert.equal(retired['plan-2026-08-02-task'].updatedAt, 5); // no tombstone refresh
+
+// storeMerge (the server's save): a device sending a stale copy can't erase a newer edit stored by
+// another device, its own new records are added, and junk entries are dropped
+const saved = Object.fromEntries(
+  storeMerge([{ id: 't', done: true, updatedAt: 200 }], [{ id: 't', done: false, updatedAt: 100 }, { id: 'n', updatedAt: 150 }, null, { x: 1 }], now).map((r) => [r.id, r])
+);
+assert.equal(saved.t.done, true);
+assert.ok(saved.n);
+assert.equal(Object.keys(saved).length, 2);
+assert.deepStrictEqual(storeMerge(null, [{ id: 'a', updatedAt: 1 }], now), [{ id: 'a', updatedAt: 1 }]); // nothing stored yet
 
 console.log('merge.test.js: all assertions passed');

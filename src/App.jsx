@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { today as todayIso } from './date.js';
 import { migrate, syncStep } from './records.js';
 import { SEEDS } from './seed.js';
 import { index } from './score.js';
 import * as A from './actions.js';
 import { purge } from './merge.js';
-import { pull, push, storedKey } from './sync.js';
+import { flush, onSyncChange, pull, push, storedKey, syncFailed } from './sync.js';
 import { fetchCanvas, readCanvas } from './canvas.js';
 import Nav from './Nav.jsx';
 import Today from './Today.jsx';
@@ -65,13 +65,16 @@ export default function App() {
     push(records);
   }, [records]);
 
-  // Pull + merge on open and whenever the app comes back. Also roll `today` over:
-  // on return after midnight, and once a minute while it stays open.
+  // Pull + merge on open, whenever the app comes back, and once a minute while it's visible
+  // (a tab left in front never gets a focus event). Unsent saves go out first, and right away
+  // when the app is hidden (a phone may suspend it before the debounce fires). Also rolls
+  // `today` over: on return after midnight, and once a minute while open.
   useEffect(() => {
     let cancelled = false;
     const sync = async () => {
       setToday(todayIso());
       if (DEMO) return;
+      await flush();
       const remote = await pull();
       // Seeds apply only after a real pull (so a stale device can't overwrite newer edits),
       // or locally, stamped 0, when this device has no sync at all (see records.js syncStep).
@@ -80,8 +83,9 @@ export default function App() {
       fetchCanvas().then((c) => !cancelled && c && setCanvas(c));
     };
     sync();
-    const onVis = () => document.visibilityState === 'visible' && sync();
-    const tick = setInterval(() => setToday(todayIso()), 60_000);
+    const visible = () => document.visibilityState === 'visible';
+    const onVis = () => (visible() ? sync() : flush());
+    const tick = setInterval(() => (visible() ? sync() : setToday(todayIso())), 60_000);
     document.addEventListener('visibilitychange', onVis);
     window.addEventListener('focus', sync);
     return () => {
@@ -92,6 +96,7 @@ export default function App() {
     };
   }, []);
 
+  const syncBad = useSyncExternalStore(onSyncChange, syncFailed);
   const idx = useMemo(() => index(records), [records]);
   const change = (fn) => setRecords((r) => fn(r, Date.now()));
   const api = {
@@ -100,6 +105,7 @@ export default function App() {
     wide,
     nav,
     canvas,
+    syncBad,
     open: (n) => {
       setNav(n);
       window.scrollTo(0, 0);

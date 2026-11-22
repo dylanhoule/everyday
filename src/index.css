@@ -466,6 +466,15 @@ button {
   color: var(--muted);
   font-size: 15px;
 }
+.sync-off {
+  margin-left: 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--bad);
+  font: inherit;
+  cursor: pointer;
+}
 .headline {
   margin: 0;
   font-family: var(--serif);

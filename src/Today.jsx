@@ -155,6 +155,19 @@ export default function Today({ api }) {
     </div>
   );
 
+  // Sync failing (offline, server down, no passphrase): say so. Tapping reloads, which retries
+  // and asks for the passphrase again if it was dismissed.
+  const dateLine = (
+    <p className="date-line">
+      {date}
+      {api.syncBad && (
+        <button className="sync-off" onClick={() => location.reload()}>
+          Not synced
+        </button>
+      )}
+    </p>
+  );
+
   const addButton = (
     <button className="icon-btn" aria-label="Add a task" onClick={addTask}>
       {Icon.plus}
@@ -166,7 +179,7 @@ export default function Today({ api }) {
       <div className="page today">
         <header className="today-head">
           <div className="today-top">
-            <p className="date-line">{date}</p>
+            {dateLine}
             {addButton}
           </div>
           <h1 className="headline">{headline}</h1>
@@ -183,7 +196,7 @@ export default function Today({ api }) {
   return (
     <div className="page today">
       <header className="today-head">
-        <p className="date-line">{date}</p>
+        {dateLine}
         <h1 className="headline">{headline}</h1>
         <p className="quote">
           <em>“{quote[0]}”</em> {quote[1]}

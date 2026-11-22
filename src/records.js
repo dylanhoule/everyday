@@ -127,9 +127,11 @@ export function applySeeds(records, seeds, today, now) {
 // One sync round for seeds. After a real pull, merge then apply pending batches. With no sync at
 // all (no passphrase stored), apply locally stamped 0 so any synced copy of those records wins
 // if this device joins sync later. A stored key with a failed pull: change nothing.
+// A pull that brings nothing new returns `cur` itself, so the app doesn't re-save on every poll.
 export function syncStep(cur, remote, seeds, { hasKey, today, now }) {
-  if (remote) return applySeeds(syncMerge(cur, remote, now), seeds, today, now);
-  return hasKey ? cur : applySeeds(cur, seeds, today, 0);
+  if (!remote) return hasKey ? cur : applySeeds(cur, seeds, today, 0);
+  const next = applySeeds(syncMerge(cur, remote, now), seeds, today, now);
+  return next.length === cur.length && !changedOnly(cur, next).length ? cur : next;
 }
 
 // Everything wrong with a SEEDS array, one message per problem (empty = valid).
