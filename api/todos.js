@@ -6,9 +6,11 @@ import { Redis } from '@upstash/redis';
 import { authed } from './_auth.js';
 import { storeMerge } from '../src/merge.js';
 
+// STORAGE_* is the store connected in Vercel with the custom prefix "STORAGE" (it replaces "KV").
+const env = process.env;
 const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN,
+  url: env.UPSTASH_REDIS_REST_URL || env.KV_REST_API_URL || env.STORAGE_REST_API_URL,
+  token: env.UPSTASH_REDIS_REST_TOKEN || env.KV_REST_API_TOKEN || env.STORAGE_REST_API_TOKEN,
 });
 const KEY = 'todos:v1';
 
